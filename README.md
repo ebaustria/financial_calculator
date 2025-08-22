@@ -1,0 +1,1 @@
+This project uses the Qt framework (LGPL v3).
