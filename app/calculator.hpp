@@ -4,58 +4,8 @@
 #include <queue>
 #include <stack>
 #include <utility>
+#include "core/token.hpp"
 #include <ui_calculator.h>
-
-enum Associativity
-{
-    LEFT,
-    RIGHT,
-};
-
-struct Token
-{
-    explicit Token(std::string val) : value{std::move(val)}
-    {
-    }
-
-    virtual ~Token() = default;
-
-    [[nodiscard]] virtual bool is_number() const
-    {
-        char* p;
-        strtof(value.c_str(), &p);
-        return *p == 0;
-    }
-
-    std::string value;
-};
-
-struct Operator final : Token
-{
-    explicit Operator(const std::string& val) : Token(val)
-    {
-        if (val == "+" || val == "-")
-        {
-            precedence = 2;
-        }
-        else
-        {
-            precedence = 3;
-        }
-        associativity = LEFT;
-    }
-
-    [[nodiscard]] bool is_number() const override
-    {
-        return false;
-    }
-
-    uint8_t precedence{};
-    Associativity associativity;
-};
-
-typedef std::shared_ptr<Token> TokenPtr;
-typedef std::shared_ptr<Operator> OperatorPtr;
 
 class Calculator final : public QFrame
 {
