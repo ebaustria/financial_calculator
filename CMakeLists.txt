@@ -7,6 +7,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(Qt6 REQUIRED COMPONENTS Widgets)
 qt_standard_project_setup()
 
-qt_add_executable(financial_calculator calculator_window.ui calculator.hpp calculator.cpp main.cpp)
+qt_add_executable(financial_calculator calculator.ui calculator_window.ui calculator.hpp calculator.cpp main.cpp)
 
 target_link_libraries(financial_calculator PRIVATE Qt6::Widgets)
