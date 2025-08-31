@@ -27,7 +27,6 @@ private:
     Token right_par{")"};
     Ui::CalculatorFrame calculator_frame;
     std::array<Token*, 6> operators;
-    static float intermediate_result(const TokenPtr& operand_a, const TokenPtr& operand_b, const TokenPtr& op);
     static std::string reverse_polish(std::queue<TokenPtr>& out_queue);
     [[nodiscard]] std::vector<TokenPtr> tokenize() const;
     [[nodiscard]] bool is_operator(const std::string& str) const;

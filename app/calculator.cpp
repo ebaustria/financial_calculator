@@ -1,4 +1,5 @@
 #include "calculator.hpp"
+#include "core/calc_helper_functions.hpp"
 
 #include <iostream>
 #include <sstream>
@@ -34,25 +35,6 @@ void Calculator::calculate_result() const
     {
         std::cerr << e.what() << std::endl;
     }
-}
-
-float Calculator::intermediate_result(const TokenPtr& operand_a, const TokenPtr& operand_b, const TokenPtr& op)
-{
-    const float a = std::stof(operand_a->value);
-    const float b = std::stof(operand_b->value);
-    if (op->value == "+")
-    {
-        return a + b;
-    }
-    if (op->value == "-")
-    {
-        return a - b;
-    }
-    if (op->value == "*")
-    {
-        return a * b;
-    }
-    return a / b;
 }
 
 std::string Calculator::reverse_polish(std::queue<TokenPtr>& out_queue)
