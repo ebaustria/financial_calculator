@@ -24,6 +24,21 @@ TEST_CASE("Check reverse Polish result for a single binary integer operation")
   CHECK(result == "161.000000");
 }
 
+TEST_CASE("Check reverse Polish result for a single binary floating point operation")
+{
+  const TokenPtr operand_a{ new Token{ "6.554" } };
+  const TokenPtr operand_b{ new Token{ "155.33" } };
+  const TokenPtr op{ new Token{ "*" } };
+
+  std::queue<TokenPtr> reverse_polish_equation;
+  reverse_polish_equation.push(operand_a);
+  reverse_polish_equation.push(operand_b);
+  reverse_polish_equation.push(op);
+
+  std::string result = reverse_polish(reverse_polish_equation);
+  CHECK(result == "1018.032820");
+}
+
 TEST_CASE("Check floating point addition")
 {
   const TokenPtr operand_a{ new Token{ "3.33" } };
