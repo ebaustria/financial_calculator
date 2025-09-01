@@ -5,31 +5,32 @@
 
 enum Associativity
 {
-    LEFT,
-    RIGHT,
+  LEFT,
+  RIGHT,
 };
 
 class Token
 {
 public:
-    explicit Token(std::string val) : value{std::move(val)}
-    {
-    }
+  explicit Token(std::string val)
+    : value{ std::move(val) }
+  {
+  }
 
-    virtual ~Token() = default;
-    virtual bool is_number();
+  virtual ~Token() = default;
+  virtual bool is_number();
 
-    std::string value;
+  std::string value;
 };
 
 class Operator final : public Token
 {
 public:
-    explicit Operator(const std::string& val);
-    bool is_number() override;
+  explicit Operator(const std::string& val);
+  bool is_number() override;
 
-    uint8_t precedence{};
-    Associativity associativity;
+  uint8_t precedence{};
+  Associativity associativity;
 };
 
 typedef std::shared_ptr<Token> TokenPtr;

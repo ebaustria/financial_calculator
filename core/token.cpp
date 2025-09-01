@@ -1,26 +1,26 @@
 #include "token.hpp"
 
-bool Token::is_number()
+bool
+Token::is_number()
 {
-    char* p;
-    strtof(value.c_str(), &p);
-    return *p == 0;
+  char* p;
+  strtof(value.c_str(), &p);
+  return *p == 0;
 }
 
-Operator::Operator(const std::string& val) : Token(val)
+Operator::Operator(const std::string& val)
+  : Token(val)
 {
-    if (val == "+" || val == "-")
-    {
-        precedence = 2;
-    }
-    else
-    {
-        precedence = 3;
-    }
-    associativity = LEFT;
+  if (val == "+" || val == "-") {
+    precedence = 2;
+  } else {
+    precedence = 3;
+  }
+  associativity = LEFT;
 }
 
-bool Operator::is_number()
+bool
+Operator::is_number()
 {
-    return false;
+  return false;
 }
