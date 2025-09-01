@@ -27,7 +27,6 @@ private:
     Token right_par{")"};
     Ui::CalculatorFrame calculator_frame;
     std::array<Token*, 6> operators;
-    static std::string reverse_polish(std::queue<TokenPtr>& out_queue);
     [[nodiscard]] std::vector<TokenPtr> tokenize() const;
     [[nodiscard]] bool is_operator(const std::string& str) const;
     static void process_operator(const TokenPtr& token, std::stack<TokenPtr>& stack, std::queue<TokenPtr>& out_queue);

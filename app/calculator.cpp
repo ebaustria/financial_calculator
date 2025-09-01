@@ -37,32 +37,6 @@ void Calculator::calculate_result() const
     }
 }
 
-std::string Calculator::reverse_polish(std::queue<TokenPtr>& out_queue)
-{
-    std::stack<TokenPtr> stack;
-    while (!out_queue.empty())
-    {
-        if (out_queue.front()->is_number())
-        {
-            stack.push(out_queue.front());
-            out_queue.pop();
-        }
-        else
-        {
-            const TokenPtr right = stack.top();
-            stack.pop();
-            const TokenPtr left = stack.top();
-            stack.pop();
-            const TokenPtr result{
-                new Token{std::to_string(intermediate_result(left, right, out_queue.front()))}
-            };
-            out_queue.pop();
-            stack.push(result);
-        }
-    }
-    return stack.top()->value;
-}
-
 std::vector<TokenPtr> Calculator::tokenize() const
 {
     std::vector<TokenPtr> tokens;

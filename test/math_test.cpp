@@ -8,6 +8,21 @@ bool effectively_equal(const double a, const double b, const double epsilon = 1e
     return res < epsilon;
 }
 
+TEST_CASE("Check reverse Polish result for a single binary integer operation")
+{
+    const TokenPtr operand_a{new Token{"6"}};
+    const TokenPtr operand_b{new Token{"155"}};
+    const TokenPtr op{new Token{"+"}};
+
+    std::queue<TokenPtr> reverse_polish_equation;
+    reverse_polish_equation.push(operand_a);
+    reverse_polish_equation.push(operand_b);
+    reverse_polish_equation.push(op);
+
+    std::string result = reverse_polish(reverse_polish_equation);
+    CHECK(result == "161.000000");
+}
+
 TEST_CASE("Check floating point addition")
 {
     const TokenPtr operand_a{new Token{"3.33"}};
