@@ -2,6 +2,7 @@
 #define CALCULATOR_HPP
 
 #include "core/token.hpp"
+#include <QSignalMapper>
 #include <queue>
 #include <stack>
 #include <ui_calculator.h>
@@ -18,6 +19,7 @@ public:
 private slots:
   // void update_equation();
   void calculate_result() const;
+  void update_equation(const QString& str) const;
 
 private:
   Operator multiplication{ "*" };
@@ -28,6 +30,8 @@ private:
   Token right_par{ ")" };
   Ui::CalculatorFrame calculator_frame;
   std::array<Token*, 6> operators;
+
+  void connect_button(const QPushButton* button, char ch);
   [[nodiscard]] std::vector<TokenPtr> tokenize() const;
   [[nodiscard]] bool is_operator(const std::string& str) const;
   static void process_operator(const TokenPtr& token,

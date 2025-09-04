@@ -19,10 +19,43 @@ Calculator::Calculator(QWidget* parent, const Qt::WindowFlags flags)
   operators[4] = &left_par;
   operators[5] = &right_par;
 
+  connect_button(calculator_frame.pushButton_0, '0');
+  connect_button(calculator_frame.pushButton_1, '1');
+  connect_button(calculator_frame.pushButton_2, '2');
+  connect_button(calculator_frame.pushButton_3, '3');
+  connect_button(calculator_frame.pushButton_4, '4');
+  connect_button(calculator_frame.pushButton_5, '5');
+  connect_button(calculator_frame.pushButton_6, '6');
+  connect_button(calculator_frame.pushButton_7, '7');
+  connect_button(calculator_frame.pushButton_8, '8');
+  connect_button(calculator_frame.pushButton_9, '9');
+  connect_button(calculator_frame.pushButton_lpar, '(');
+  connect_button(calculator_frame.pushButton_rpar, ')');
+  connect_button(calculator_frame.pushButton_div, '/');
+  connect_button(calculator_frame.pushButton_add, '+');
+  connect_button(calculator_frame.pushButton_min, '-');
+  connect_button(calculator_frame.pushButton_mult, '*');
+  connect_button(calculator_frame.pushButton_dec, '.');
+
   connect(calculator_frame.pushButton_eq,
           &QPushButton::clicked,
           this,
           &Calculator::calculate_result);
+}
+
+void
+Calculator::connect_button(const QPushButton* button, char ch)
+{
+  connect(button, &QPushButton::clicked, this, [this, ch] {
+    update_equation(QString(ch));
+  });
+}
+
+void
+Calculator::update_equation(const QString& str) const
+{
+  const QString text = calculator_frame.equationEdit->text();
+  calculator_frame.equationEdit->setText(text + str);
 }
 
 void
