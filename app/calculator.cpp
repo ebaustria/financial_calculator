@@ -9,10 +9,8 @@ Calculator::Calculator(QWidget* parent, const Qt::WindowFlags flags)
   : QFrame(parent, flags)
 {
   calculator_frame.setupUi(this);
-  // calculator_frame.equationEdit->setValidator(
-  //     new
-  //     QRegularExpressionValidator(QRegularExpression("(([-]?[0-9]*\.?[0-9]*)[-+/*]([-]?[0-9]*\.?[0-9]*))*"),
-  //                                     calculator_frame.equationEdit));
+  calculator_frame.equationEdit->setValidator(new QRegularExpressionValidator(
+    QRegularExpression("^[^A-Za-zÄÖÜäöüß]+$"), calculator_frame.equationEdit));
 
   operators[0] = &multiplication;
   operators[1] = &division;
