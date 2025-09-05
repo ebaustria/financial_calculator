@@ -13,6 +13,12 @@ TEST_CASE("Check if floating point token is number")
   CHECK(token.is_number() == true);
 }
 
+TEST_CASE("Check if floating point token without leading 0 is number")
+{
+  Token token{ ".57" };
+  CHECK(token.is_number() == true);
+}
+
 TEST_CASE("Check if non-number token is number")
 {
   Token token{ "(" };
