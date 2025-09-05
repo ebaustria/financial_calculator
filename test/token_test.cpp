@@ -7,9 +7,21 @@ TEST_CASE("Check if integer token is number")
   CHECK(token.is_number() == true);
 }
 
+TEST_CASE("Check if negative integer token is number")
+{
+  Token token{ "-101" };
+  CHECK(token.is_number() == true);
+}
+
 TEST_CASE("Check if floating point token is number")
 {
   Token token{ "0.2" };
+  CHECK(token.is_number() == true);
+}
+
+TEST_CASE("Check if negative floating point token is number")
+{
+  Token token{ "-37.89" };
   CHECK(token.is_number() == true);
 }
 
