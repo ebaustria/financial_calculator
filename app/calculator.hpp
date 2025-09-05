@@ -41,6 +41,7 @@ private:
                                 std::queue<TokenPtr>& out_queue);
   [[nodiscard]] std::queue<TokenPtr> shunting_yard(
     const std::vector<TokenPtr>& tokens) const;
+  // static QRegularExpression exp;
 };
 
 #endif /* CALCULATOR_HPP */

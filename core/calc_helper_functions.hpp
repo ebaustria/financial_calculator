@@ -10,6 +10,8 @@ intermediate_result(const TokenPtr& operand_a,
                     const TokenPtr& operand_b,
                     const TokenPtr& op)
 {
+  // TODO Fix this
+  std::locale::global(std::locale::classic());
   const double a = std::stod(operand_a->value);
   const double b = std::stod(operand_b->value);
   if (op->value == "+") {

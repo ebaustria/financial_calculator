@@ -3,7 +3,10 @@
 
 #include <QRegularExpressionValidator>
 #include <iostream>
+#include <regex>
 #include <sstream>
+
+// QRegularExpression Calculator::exp{ R"(^\D*\.\d*$)" };
 
 Calculator::Calculator(QWidget* parent, const Qt::WindowFlags flags)
   : QFrame(parent, flags)
@@ -36,6 +39,25 @@ Calculator::Calculator(QWidget* parent, const Qt::WindowFlags flags)
   connect_button(calculator_frame.pushButton_min, '-');
   connect_button(calculator_frame.pushButton_mult, '*');
   connect_button(calculator_frame.pushButton_dec, '.');
+
+  // connect(calculator_frame.equationEdit, &QLineEdit::textChanged, this, [this] {
+  //   const QString text = calculator_frame.equationEdit->text();
+  //   QRegularExpressionMatchIterator it = exp.globalMatch(text);
+  //   QStringList matches;
+  //
+  //   while (it.hasNext()) {
+  //     QRegularExpressionMatch match = it.next();
+  //     QString cap = match.captured(0);
+  //     cap.prepend('0');
+  //     matches << cap;
+  //   }
+  //
+  //   if (matches.count() > 0)
+  //   {
+  //     const QString edited_string = matches.join("");
+  //     calculator_frame.equationEdit->setText(edited_string);
+  //   }
+  // });
 
   connect(calculator_frame.pushButton_eq,
           &QPushButton::clicked,
