@@ -5,8 +5,7 @@ bool
 Token::is_number()
 {
   double dub;
-  if (value.starts_with('.'))
-  {
+  if (value.starts_with('.')) {
     value.insert(0, 1, '0');
   }
   std::istringstream iss(value);
