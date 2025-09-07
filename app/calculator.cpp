@@ -40,6 +40,13 @@ Calculator::Calculator(QWidget* parent, const Qt::WindowFlags flags)
   connect_button(calculator_frame.pushButton_mult, '*');
   connect_button(calculator_frame.pushButton_dec, '.');
 
+  connect(calculator_frame.pushButton_del, &QPushButton::clicked, this, [this] {
+    if (const QString text = calculator_frame.equationEdit->text(); text.length() > 0)
+    {
+      calculator_frame.equationEdit->setText(text.chopped(1));
+    }
+  });
+
   // connect(calculator_frame.equationEdit, &QLineEdit::textChanged, this, [this] {
   //   const QString text = calculator_frame.equationEdit->text();
   //   QRegularExpressionMatchIterator it = exp.globalMatch(text);
