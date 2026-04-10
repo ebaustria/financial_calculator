@@ -94,7 +94,7 @@ Calculator::calculate_result() const
   try {
     std::queue<TokenPtr> out_queue = shunting_yard(tokenize());
     const QString result = reverse_polish(out_queue);
-    qDebug() << result;
+    calculator_frame.resultEdit->setText(result);
   } catch (std::exception& e) {
     std::cerr << e.what() << std::endl;
   }

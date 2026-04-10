@@ -19,9 +19,9 @@ public:
 private slots:
   void calculate_result() const;
   void update_equation(const QString& str) const;
-  //
+
   // signals:
-  //   emit result_changed();
+  //   void result_changed(const QString& result) const;
 
 private:
   Operator multiplication{ "*" };
