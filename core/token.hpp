@@ -1,6 +1,7 @@
 #ifndef TOKEN_HPP
 #define TOKEN_HPP
 
+#include <QString>
 #include <memory>
 
 enum Associativity
@@ -12,21 +13,21 @@ enum Associativity
 class Token
 {
 public:
-  explicit Token(std::string val)
-    : value{ std::move(val) }
+  explicit Token(const QString& val)
+    : value{ val }
   {
   }
 
   virtual ~Token() = default;
   virtual bool is_number();
 
-  std::string value;
+  QString value;
 };
 
 class Operator final : public Token
 {
 public:
-  explicit Operator(const std::string& val);
+  explicit Operator(const QString& val);
   bool is_number() override;
 
   uint8_t precedence{};

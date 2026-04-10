@@ -5,15 +5,15 @@ bool
 Token::is_number()
 {
   double dub;
-  if (value.starts_with('.')) {
-    value.insert(0, 1, '0');
+  if (value.startsWith('.')) {
+    value.insert(0, '0');
   }
-  std::istringstream iss(value);
+  std::istringstream iss(value.toStdString());
   iss >> std::noskipws >> dub;
   return iss.eof() && !iss.fail();
 }
 
-Operator::Operator(const std::string& val)
+Operator::Operator(const QString& val)
   : Token(val)
 {
   if (val == "+" || val == "-") {

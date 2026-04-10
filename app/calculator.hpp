@@ -17,9 +17,11 @@ public:
                       Qt::WindowFlags flags = Qt::WindowFlags());
 
 private slots:
-  // void update_equation();
   void calculate_result() const;
   void update_equation(const QString& str) const;
+  //
+  // signals:
+  //   emit result_changed();
 
 private:
   Operator multiplication{ "*" };
@@ -33,7 +35,7 @@ private:
 
   void connect_button(const QPushButton* button, char ch);
   [[nodiscard]] std::vector<TokenPtr> tokenize() const;
-  [[nodiscard]] bool is_operator(const std::string& str) const;
+  [[nodiscard]] bool is_operator(const QString& str) const;
   static void process_operator(const TokenPtr& token,
                                std::stack<TokenPtr>& stack,
                                std::queue<TokenPtr>& out_queue);

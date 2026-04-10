@@ -12,8 +12,8 @@ intermediate_result(const TokenPtr& operand_a,
 {
   // TODO Fix this
   std::locale::global(std::locale::classic());
-  const double a = std::stod(operand_a->value);
-  const double b = std::stod(operand_b->value);
+  const double a = operand_a->value.toDouble();
+  const double b = operand_b->value.toDouble();
   if (op->value == "+") {
     return a + b;
   }
@@ -26,7 +26,7 @@ intermediate_result(const TokenPtr& operand_a,
   return a / b;
 }
 
-static std::string
+static QString
 reverse_polish(std::queue<TokenPtr>& out_queue)
 {
   std::stack<TokenPtr> stack;
@@ -39,8 +39,9 @@ reverse_polish(std::queue<TokenPtr>& out_queue)
       stack.pop();
       const TokenPtr left = stack.top();
       stack.pop();
-      const TokenPtr result{ new Token{
-        std::to_string(intermediate_result(left, right, out_queue.front())) } };
+      // TODO Check precision here
+      const TokenPtr result{ new Token{ QString::number(
+        intermediate_result(left, right, out_queue.front()), 'g', 10) } };
       out_queue.pop();
       stack.push(result);
     }

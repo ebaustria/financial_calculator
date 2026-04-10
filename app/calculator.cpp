@@ -93,7 +93,7 @@ Calculator::calculate_result() const
 {
   try {
     std::queue<TokenPtr> out_queue = shunting_yard(tokenize());
-    const std::string result = reverse_polish(out_queue);
+    const QString result = reverse_polish(out_queue);
     qDebug() << result;
   } catch (std::exception& e) {
     std::cerr << e.what() << std::endl;
@@ -104,31 +104,30 @@ std::vector<TokenPtr>
 Calculator::tokenize() const
 {
   std::vector<TokenPtr> tokens;
-  const std::string equation_text =
-    calculator_frame.equationEdit->text().toStdString();
+  const QString equation_text = calculator_frame.equationEdit->text();
   const size_t equation_len = equation_text.length();
   std::string::size_type prev_pos = 0;
 
   for (std::string::size_type pos = 0; pos < equation_len; ++pos) {
     const std::string::size_type token_len = pos - prev_pos;
-    if (std::string str{ equation_text[pos] }; is_operator(str)) {
+    if (QChar ch = equation_text.at(pos); is_operator(ch)) {
       if (token_len > 0) {
-        TokenPtr tp{ new Token{ equation_text.substr(prev_pos, token_len) } };
+        TokenPtr tp{ new Token{ equation_text.mid(prev_pos, token_len) } };
         tokens.push_back(tp);
       }
-      if (str == "(" || str == ")") {
-        TokenPtr tp{ new Token{ str } };
+      if (ch == "(" || ch == ")") {
+        TokenPtr tp{ new Token{ ch } };
         tokens.push_back(tp);
         prev_pos = pos + 1;
         continue;
       }
 
-      OperatorPtr op{ new Operator{ str } };
+      OperatorPtr op{ new Operator{ ch } };
       tokens.push_back(op);
       prev_pos = pos + 1;
     }
     if (pos == equation_len - 1) {
-      TokenPtr tp{ new Token{ equation_text.substr(prev_pos) } };
+      TokenPtr tp{ new Token{ equation_text.mid(prev_pos) } };
       tokens.push_back(tp);
     }
   }
@@ -136,7 +135,7 @@ Calculator::tokenize() const
 }
 
 bool
-Calculator::is_operator(const std::string& str) const
+Calculator::is_operator(const QString& str) const
 {
   bool is_operator{ false };
   for (const Token* op : operators) {
@@ -211,7 +210,7 @@ Calculator::shunting_yard(const std::vector<TokenPtr>& tokens) const
       continue;
     }
     std::stringstream string_stream;
-    string_stream << "Token '" << tok->value
+    string_stream << "Token '" << tok->value.toStdString()
                   << "' is not a number or mathematical operator.";
     throw std::runtime_error(string_stream.str());
   }

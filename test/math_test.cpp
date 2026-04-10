@@ -11,7 +11,7 @@ effectively_equal(const double a, const double b, const double epsilon = 1e-12f)
 
 TEST_CASE("Check reverse Polish result for a single binary integer operation")
 {
-  const TokenPtr operand_a{ new Token{ "6" } };
+  const TokenPtr operand_a{ new Token{ QString{ "6" } } };
   const TokenPtr operand_b{ new Token{ "155" } };
   const TokenPtr op{ new Token{ "+" } };
 
@@ -20,8 +20,8 @@ TEST_CASE("Check reverse Polish result for a single binary integer operation")
   reverse_polish_equation.push(operand_b);
   reverse_polish_equation.push(op);
 
-  std::string result = reverse_polish(reverse_polish_equation);
-  CHECK(result == "161.000000");
+  const QString result = reverse_polish(reverse_polish_equation);
+  CHECK(result.toStdString() == "161");
 }
 
 TEST_CASE("Check reverse Polish result for two binary integer operations")
@@ -39,8 +39,8 @@ TEST_CASE("Check reverse Polish result for two binary integer operations")
   reverse_polish_equation.push(operand_c);
   reverse_polish_equation.push(op_2);
 
-  std::string result = reverse_polish(reverse_polish_equation);
-  CHECK(result == "59.000000");
+  const QString result = reverse_polish(reverse_polish_equation);
+  CHECK(result.toStdString() == "59");
 }
 
 TEST_CASE(
@@ -55,8 +55,8 @@ TEST_CASE(
   reverse_polish_equation.push(operand_b);
   reverse_polish_equation.push(op);
 
-  std::string result = reverse_polish(reverse_polish_equation);
-  CHECK(result == "1018.032820");
+  const QString result = reverse_polish(reverse_polish_equation);
+  CHECK(result.toStdString() == "1018.03282");
 }
 
 TEST_CASE("Check floating point addition")
@@ -134,3 +134,13 @@ TEST_CASE("Check integer division")
   const double result = intermediate_result(operand_a, operand_b, op);
   CHECK(result == 7);
 }
+
+// TEST_CASE("Check equation that starts with '('")
+// {
+//   const TokenPtr op_a{ new Token{ "(" } };
+//   const TokenPtr operand_a{ new Token{ "7" } };
+//   const OperatorPtr op_b{ new Operator{ "+" } };
+//   const TokenPtr operand_b{ new Token{ "4" } };
+//   const TokenPtr op_c{ new Token{ ")" } };
+//   const OperatorPtr
+// }
