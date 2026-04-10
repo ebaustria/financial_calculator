@@ -119,6 +119,7 @@ Calculator::tokenize() const
       if (str == "(" || str == ")") {
         TokenPtr tp{ new Token{ str } };
         tokens.push_back(tp);
+        prev_pos = pos + 1;
         continue;
       }
 
