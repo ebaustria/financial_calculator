@@ -124,10 +124,10 @@ Calculator::tokenize() const
   std::vector<TokenPtr> tokens;
   const QString equation_text = calculator_frame.equationEdit->text();
   const size_t equation_len = equation_text.length();
-  std::string::size_type prev_pos = 0;
+  qsizetype prev_pos = 0;
 
-  for (std::string::size_type pos = 0; pos < equation_len; ++pos) {
-    const std::string::size_type token_len = pos - prev_pos;
+  for (qsizetype pos = 0; pos < equation_len; ++pos) {
+    const qsizetype token_len = pos - prev_pos;
     if (QChar ch = equation_text.at(pos); is_operator(ch)) {
       if (token_len > 0) {
         TokenPtr tp{ new Token{ equation_text.mid(prev_pos, token_len) } };
