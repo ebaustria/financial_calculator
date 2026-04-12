@@ -1,9 +1,23 @@
 #ifndef CALC_HELPER_FUNCTIONS_HPP
 #define CALC_HELPER_FUNCTIONS_HPP
 
+#include <QLineEdit>
+
 #include "core/token.hpp"
 #include <queue>
 #include <stack>
+
+static float
+text_to_float(const QLineEdit* line_edit)
+{
+  return line_edit->text().toFloat();
+}
+
+static uint8_t
+text_to_uint8(const QLineEdit* line_edit)
+{
+  return line_edit->text().toUInt();
+}
 
 static double
 intermediate_result(const TokenPtr& operand_a,

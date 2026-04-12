@@ -2,11 +2,11 @@
 #define CALCULATOR_HPP
 
 #include "core/token.hpp"
-#include <QSignalMapper>
 #include <queue>
 #include <stack>
 #include <ui_calculator.h>
-#include <utility>
+
+#include "core/chart_series.hpp"
 
 class Calculator final : public QFrame
 {
@@ -15,13 +15,12 @@ class Calculator final : public QFrame
 public:
   explicit Calculator(QWidget* parent = nullptr,
                       Qt::WindowFlags flags = Qt::WindowFlags());
+  ~Calculator() override;
 
 private slots:
   void calculate_result() const;
   void update_equation(const QString& str) const;
-
-  // signals:
-  //   void result_changed(const QString& result) const;
+  void plot_compounding_interest();
 
 private:
   Operator multiplication{ "*" };
@@ -34,6 +33,7 @@ private:
   std::array<Token*, 6> operators;
 
   void connect_button(const QPushButton* button, char ch);
+  void make_chart(const QString& title) const;
   [[nodiscard]] std::vector<TokenPtr> tokenize() const;
   [[nodiscard]] bool is_operator(const QString& str) const;
   static void process_operator(const TokenPtr& token,
@@ -43,7 +43,8 @@ private:
                                 std::queue<TokenPtr>& out_queue);
   [[nodiscard]] std::queue<TokenPtr> shunting_yard(
     const std::vector<TokenPtr>& tokens) const;
-  // static QRegularExpression exp;
+  ChartSeries chart_series;
+  QChart* chart{ nullptr };
 };
 
 #endif /* CALCULATOR_HPP */

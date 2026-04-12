@@ -11,6 +11,7 @@
 Calculator::Calculator(QWidget* parent, const Qt::WindowFlags flags)
   : QFrame(parent, flags)
 {
+  chart = new QChart;
   calculator_frame.setupUi(this);
   calculator_frame.equationEdit->setValidator(new QRegularExpressionValidator(
     QRegularExpression("^[^A-Za-zÄÖÜäöüß]+$"), calculator_frame.equationEdit));
@@ -47,30 +48,20 @@ Calculator::Calculator(QWidget* parent, const Qt::WindowFlags flags)
     }
   });
 
-  // connect(calculator_frame.equationEdit, &QLineEdit::textChanged, this,
-  // [this] {
-  //   const QString text = calculator_frame.equationEdit->text();
-  //   QRegularExpressionMatchIterator it = exp.globalMatch(text);
-  //   QStringList matches;
-  //
-  //   while (it.hasNext()) {
-  //     QRegularExpressionMatch match = it.next();
-  //     QString cap = match.captured(0);
-  //     cap.prepend('0');
-  //     matches << cap;
-  //   }
-  //
-  //   if (matches.count() > 0)
-  //   {
-  //     const QString edited_string = matches.join("");
-  //     calculator_frame.equationEdit->setText(edited_string);
-  //   }
-  // });
-
   connect(calculator_frame.pushButton_eq,
           &QPushButton::clicked,
           this,
           &Calculator::calculate_result);
+
+  connect(calculator_frame.plotCompoundInterestButton,
+          &QPushButton::clicked,
+          this,
+          &Calculator::plot_compounding_interest);
+}
+
+Calculator::~Calculator()
+{
+  delete chart;
 }
 
 void
@@ -86,6 +77,33 @@ Calculator::update_equation(const QString& str) const
 {
   const QString text = calculator_frame.equationEdit->text();
   calculator_frame.equationEdit->setText(text + str);
+}
+
+void
+Calculator::plot_compounding_interest()
+{
+  try {
+    auto comp_int_strat = CompoundingInterestStrategy(
+      text_to_float(calculator_frame.compoundPrincipalEdit),
+      text_to_float(calculator_frame.compoundLineEdit),
+      text_to_float(calculator_frame.compoundRateLineEdit),
+      text_to_uint8(calculator_frame.compoundYearsLineEdit));
+    chart_series.set_strategy(&comp_int_strat);
+    chart_series.fill_series();
+    make_chart("Compounding Interest");
+  } catch (std::exception& e) {
+    std::cerr << e.what() << std::endl;
+  }
+}
+
+void
+Calculator::make_chart(const QString& title) const
+{
+  chart->legend()->hide();
+  chart->addSeries(chart_series.line_series);
+  chart->createDefaultAxes();
+  chart->setTitle(title);
+  calculator_frame.lineChart->setChart(chart);
 }
 
 void
