@@ -56,6 +56,10 @@ Calculator::Calculator(QWidget* parent, const Qt::WindowFlags flags)
           &QPushButton::clicked,
           this,
           &Calculator::plot_simple_interest);
+  connect(calculator_frame.plotLoanRepaymentButton,
+          &QPushButton::clicked,
+          this,
+          &Calculator::plot_loan_repayment);
 
   chart->legend()->hide();
   chart->addSeries(chart_series.line_series);
@@ -94,7 +98,7 @@ Calculator::plot_compounding_interest()
       text_to_float(calculator_frame.compoundRateLineEdit),
       text_to_uint8(calculator_frame.compoundYearsLineEdit));
     chart_series.set_strategy(&comp_int_strat);
-    chart_series.fill_series();
+    chart_series.replace_series();
     update_chart("Compounding Interest");
   } catch (std::exception& e) {
     std::cerr << e.what() << std::endl;
@@ -111,8 +115,24 @@ Calculator::plot_simple_interest()
       text_to_uint8(calculator_frame.simpleYearsLineEdit)
     };
     chart_series.set_strategy(&simple_int_strat);
-    chart_series.fill_series();
+    chart_series.replace_series();
     update_chart("Simple Interest");
+  } catch (std::exception& e) {
+    std::cerr << e.what() << std::endl;
+  }
+}
+
+void
+Calculator::plot_loan_repayment()
+{
+  try {
+    auto repayment_strat =
+      LoanRepaymentStrategy{ text_to_float(calculator_frame.loanPrincipalEdit),
+                             text_to_float(calculator_frame.loanInterestEdit),
+                             text_to_float(calculator_frame.loanPaymentEdit) };
+    chart_series.set_strategy(&repayment_strat);
+    chart_series.replace_series();
+    update_chart("Loan Repayment");
   } catch (std::exception& e) {
     std::cerr << e.what() << std::endl;
   }
@@ -123,10 +143,10 @@ Calculator::update_chart(const QString& title) const
 {
   chart->axes(Qt::Horizontal)
     .first()
-    ->setRange(chart_series.min_x, chart_series.max_x);
+    ->setRange(chart_series.strategy->min_x, chart_series.strategy->max_x);
   chart->axes(Qt::Vertical)
     .first()
-    ->setRange(chart_series.min_y, chart_series.max_y);
+    ->setRange(chart_series.strategy->min_y, chart_series.strategy->max_y);
   chart->setTitle(title);
 }
 

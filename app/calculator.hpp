@@ -19,6 +19,7 @@ private slots:
   void update_equation(const QString& str) const;
   void plot_compounding_interest();
   void plot_simple_interest();
+  void plot_loan_repayment();
 
 private:
   Ui::CalculatorFrame calculator_frame;
