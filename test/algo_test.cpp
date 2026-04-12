@@ -4,12 +4,7 @@
 
 #include "core/algo.hpp"
 
-bool
-effectively_equal(const double a, const double b, const double epsilon = 1e-12f)
-{
-  const double res = std::fabs(a - b);
-  return res < epsilon;
-}
+#include "test_helpers.hpp"
 
 TEST_CASE("Check reverse Polish result for a single binary integer operation")
 {

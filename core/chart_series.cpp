@@ -7,7 +7,7 @@ Strategy::calculate_all()
 {
   QList<QPointF> new_points;
   max_x = max_periods;
-  for (uint16_t period = 0; period <= max_periods; ++period) {
+  for (uint32_t period = 0; period <= max_periods; ++period) {
     const double final_value = calculate(period);
     new_points.append(QPointF{ static_cast<double>(period), final_value });
     if (period == 0) {
@@ -21,14 +21,14 @@ Strategy::calculate_all()
 }
 
 double
-CompoundingInterestStrategy::calculate(const uint16_t period)
+CompoundingInterestStrategy::calculate(const uint32_t period)
 {
   const double int_rate_converted = interest_rate * 0.01;
   return principal * std::pow(1 + int_rate_converted / compound_rate, period);
 }
 
 double
-SimpleInterestStrategy::calculate(const uint16_t period)
+SimpleInterestStrategy::calculate(const uint32_t period)
 {
   const double int_rate_converted = interest_rate * 0.01;
   return principal * (1 + int_rate_converted * period);
@@ -39,7 +39,7 @@ LoanRepaymentStrategy::calculate_all()
 {
   QList<QPointF> new_points;
   if (is_amortizing()) {
-    uint16_t period = 0;
+    uint32_t period = 0;
     double remaining_balance = calculate(period);
     max_y = remaining_balance;
     new_points.append(
@@ -62,7 +62,7 @@ LoanRepaymentStrategy::calculate_all()
 }
 
 double
-LoanRepaymentStrategy::calculate(const uint16_t period)
+LoanRepaymentStrategy::calculate(const uint32_t period)
 {
   const double total_interest = std::pow(1 + monthly_interest, period);
   const double future_value = principal * total_interest;
