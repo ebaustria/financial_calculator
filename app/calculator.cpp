@@ -3,8 +3,10 @@
 
 #include <QRegularExpressionValidator>
 #include <iostream>
+#include <queue>
 #include <regex>
-#include <sstream>
+
+#include "core/algo.hpp"
 
 // QRegularExpression Calculator::exp{ R"(^\D*\.\d*$)" };
 
@@ -15,13 +17,6 @@ Calculator::Calculator(QWidget* parent, const Qt::WindowFlags flags)
   calculator_frame.setupUi(this);
   calculator_frame.equationEdit->setValidator(new QRegularExpressionValidator(
     QRegularExpression("^[^A-Za-zÄÖÜäöüß]+$"), calculator_frame.equationEdit));
-
-  operators[0] = &multiplication;
-  operators[1] = &division;
-  operators[2] = &addition;
-  operators[3] = &subtraction;
-  operators[4] = &left_par;
-  operators[5] = &right_par;
 
   connect_button(calculator_frame.pushButton_0, '0');
   connect_button(calculator_frame.pushButton_1, '1');
@@ -110,134 +105,11 @@ void
 Calculator::calculate_result() const
 {
   try {
-    std::queue<TokenPtr> out_queue = shunting_yard(tokenize());
+    std::queue<TokenPtr> out_queue =
+      shunting_yard(tokenize(calculator_frame.equationEdit->text()));
     const QString result = reverse_polish(out_queue);
     calculator_frame.resultEdit->setText(result);
   } catch (std::exception& e) {
     std::cerr << e.what() << std::endl;
   }
-}
-
-std::vector<TokenPtr>
-Calculator::tokenize() const
-{
-  std::vector<TokenPtr> tokens;
-  const QString equation_text = calculator_frame.equationEdit->text();
-  const size_t equation_len = equation_text.length();
-  qsizetype prev_pos = 0;
-
-  for (qsizetype pos = 0; pos < equation_len; ++pos) {
-    const qsizetype token_len = pos - prev_pos;
-    if (QChar ch = equation_text.at(pos); is_operator(ch)) {
-      if (token_len > 0) {
-        TokenPtr tp{ new Token{ equation_text.mid(prev_pos, token_len) } };
-        tokens.push_back(tp);
-      }
-      if (ch == "(" || ch == ")") {
-        TokenPtr tp{ new Token{ ch } };
-        tokens.push_back(tp);
-        prev_pos = pos + 1;
-        continue;
-      }
-
-      OperatorPtr op{ new Operator{ ch } };
-      tokens.push_back(op);
-      prev_pos = pos + 1;
-    }
-    if (pos == equation_len - 1) {
-      TokenPtr tp{ new Token{ equation_text.mid(prev_pos) } };
-      tokens.push_back(tp);
-    }
-  }
-  return tokens;
-}
-
-bool
-Calculator::is_operator(const QString& str) const
-{
-  bool is_operator{ false };
-  for (const Token* op : operators) {
-    if (str == op->value) {
-      is_operator = true;
-      break;
-    }
-  }
-  return is_operator;
-}
-
-void
-Calculator::process_operator(const TokenPtr& token,
-                             std::stack<TokenPtr>& stack,
-                             std::queue<TokenPtr>& out_queue)
-{
-  while (!stack.empty()) {
-    if (stack.top()->value == "(") {
-      break;
-    }
-    const OperatorPtr top = std::dynamic_pointer_cast<Operator>(stack.top());
-    const OperatorPtr token_operator =
-      std::dynamic_pointer_cast<Operator>(token);
-    if (top->precedence > token_operator->precedence ||
-        (top->precedence == token_operator->precedence &&
-         token_operator->associativity == LEFT)) {
-      out_queue.push(top);
-      stack.pop();
-    }
-  }
-  stack.push(token);
-}
-
-void
-Calculator::process_right_par(std::stack<TokenPtr>& stack,
-                              std::queue<TokenPtr>& out_queue)
-{
-  while (!stack.empty()) {
-    if (stack.top()->value == "(") {
-      break;
-    }
-    out_queue.push(stack.top());
-    stack.pop();
-  }
-  if (stack.top()->value != "(") {
-    throw std::runtime_error("Mismatched parentheses");
-  }
-  stack.pop();
-}
-
-std::queue<TokenPtr>
-Calculator::shunting_yard(const std::vector<TokenPtr>& tokens) const
-{
-  std::stack<TokenPtr> stack;
-  std::queue<TokenPtr> out_queue;
-
-  for (const TokenPtr& tok : tokens) {
-    if (tok->is_number()) {
-      out_queue.push(tok);
-      continue;
-    }
-    if (is_operator(tok->value) && tok->value != "(" && tok->value != ")") {
-      process_operator(tok, stack, out_queue);
-      continue;
-    }
-    if (tok->value == "(") {
-      stack.push(tok);
-      continue;
-    }
-    if (tok->value == ")") {
-      process_right_par(stack, out_queue);
-      continue;
-    }
-    std::stringstream string_stream;
-    string_stream << "Token '" << tok->value.toStdString()
-                  << "' is not a number or mathematical operator.";
-    throw std::runtime_error(string_stream.str());
-  }
-  while (!stack.empty()) {
-    if (stack.top()->value == "(") {
-      throw std::runtime_error("Mismatched parentheses");
-    }
-    out_queue.push(stack.top());
-    stack.pop();
-  }
-  return out_queue;
 }
