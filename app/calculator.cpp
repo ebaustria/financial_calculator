@@ -52,6 +52,16 @@ Calculator::Calculator(QWidget* parent, const Qt::WindowFlags flags)
           &QPushButton::clicked,
           this,
           &Calculator::plot_compounding_interest);
+  connect(calculator_frame.plotSimpleInterestButton,
+          &QPushButton::clicked,
+          this,
+          &Calculator::plot_simple_interest);
+
+  chart->legend()->hide();
+  chart->addSeries(chart_series.line_series);
+  chart->createDefaultAxes();
+  chart->setTitle("No Data to Display");
+  calculator_frame.lineChart->setChart(chart);
 }
 
 Calculator::~Calculator()
@@ -85,20 +95,39 @@ Calculator::plot_compounding_interest()
       text_to_uint8(calculator_frame.compoundYearsLineEdit));
     chart_series.set_strategy(&comp_int_strat);
     chart_series.fill_series();
-    make_chart("Compounding Interest");
+    update_chart("Compounding Interest");
   } catch (std::exception& e) {
     std::cerr << e.what() << std::endl;
   }
 }
 
 void
-Calculator::make_chart(const QString& title) const
+Calculator::plot_simple_interest()
 {
-  chart->legend()->hide();
-  chart->addSeries(chart_series.line_series);
-  chart->createDefaultAxes();
+  try {
+    auto simple_int_strat = SimpleInterestStrategy{
+      text_to_float(calculator_frame.simplePrincipalLineEdit),
+      text_to_float(calculator_frame.simpleLineEdit),
+      text_to_uint8(calculator_frame.simpleYearsLineEdit)
+    };
+    chart_series.set_strategy(&simple_int_strat);
+    chart_series.fill_series();
+    update_chart("Simple Interest");
+  } catch (std::exception& e) {
+    std::cerr << e.what() << std::endl;
+  }
+}
+
+void
+Calculator::update_chart(const QString& title) const
+{
+  chart->axes(Qt::Horizontal)
+    .first()
+    ->setRange(chart_series.min_x, chart_series.max_x);
+  chart->axes(Qt::Vertical)
+    .first()
+    ->setRange(chart_series.min_y, chart_series.max_y);
   chart->setTitle(title);
-  calculator_frame.lineChart->setChart(chart);
 }
 
 void

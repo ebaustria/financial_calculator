@@ -18,12 +18,13 @@ private slots:
   void calculate_result() const;
   void update_equation(const QString& str) const;
   void plot_compounding_interest();
+  void plot_simple_interest();
 
 private:
   Ui::CalculatorFrame calculator_frame;
 
   void connect_button(const QPushButton* button, char ch);
-  void make_chart(const QString& title) const;
+  void update_chart(const QString& title) const;
   ChartSeries chart_series;
   QChart* chart{ nullptr };
 };

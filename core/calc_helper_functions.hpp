@@ -41,5 +41,4 @@ is_operator(const QString& str)
   return is_operator;
 }
 
-
 #endif /* CALC_HELPER_FUNCTIONS_HPP */

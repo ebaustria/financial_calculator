@@ -161,4 +161,4 @@ shunting_yard(const std::vector<TokenPtr>& tokens)
   return out_queue;
 }
 
-#endif //FINANCIAL_CALCULATOR_ALGO_HPP
+#endif // FINANCIAL_CALCULATOR_ALGO_HPP

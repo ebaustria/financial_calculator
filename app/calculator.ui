@@ -384,34 +384,34 @@
        <widget class="QWidget" name="simpleInterestForm" native="true">
         <layout class="QFormLayout" name="formLayout">
          <item row="0" column="0">
-          <widget class="QLabel" name="principalLabel">
+          <widget class="QLabel" name="simplePrincipalLabel">
            <property name="text">
             <string>Principal:</string>
            </property>
           </widget>
          </item>
          <item row="0" column="1">
-          <widget class="QLineEdit" name="principalLineEdit"/>
+          <widget class="QLineEdit" name="simplePrincipalLineEdit"/>
          </item>
          <item row="1" column="0">
-          <widget class="QLabel" name="simpleInterestLabel">
+          <widget class="QLabel" name="simpleLabel">
            <property name="text">
             <string>Interest rate (%):</string>
            </property>
           </widget>
          </item>
          <item row="1" column="1">
-          <widget class="QLineEdit" name="simpleInterestLineEdit"/>
+          <widget class="QLineEdit" name="simpleLineEdit"/>
          </item>
          <item row="2" column="0">
-          <widget class="QLabel" name="simpleInterestYearsLabel">
+          <widget class="QLabel" name="simpleYearsLabel">
            <property name="text">
             <string>Years:</string>
            </property>
           </widget>
          </item>
          <item row="2" column="1">
-          <widget class="QLineEdit" name="simpleInterestYearsLineEdit"/>
+          <widget class="QLineEdit" name="simpleYearsLineEdit"/>
          </item>
         </layout>
        </widget>
