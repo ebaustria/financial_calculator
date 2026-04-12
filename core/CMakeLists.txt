@@ -3,4 +3,4 @@ project(core)
 
 qt_add_library(core calc_helper_functions.hpp algo.hpp chart_series.hpp chart_series.cpp token.hpp token.cpp)
 
-target_link_libraries(core PRIVATE Qt6::Widgets)
+target_link_libraries(core PUBLIC Qt6::Widgets Qt6::Charts)

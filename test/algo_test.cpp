@@ -2,6 +2,8 @@
 #include <catch2/catch_test_macros.hpp>
 #include <cmath>
 
+#include "core/algo.hpp"
+
 bool
 effectively_equal(const double a, const double b, const double epsilon = 1e-12f)
 {
@@ -59,7 +61,7 @@ TEST_CASE(
   CHECK(result.toStdString() == "1018.03282");
 }
 
-TEST_CASE("Check floating point addition")
+TEST_CASE("Check intermediate result for floating point addition")
 {
   const TokenPtr operand_a{ new Token{ "3.33" } };
   const TokenPtr operand_b{ new Token{ "4.5" } };
@@ -69,7 +71,7 @@ TEST_CASE("Check floating point addition")
   CHECK(effectively_equal(result, expected_result) == true);
 }
 
-TEST_CASE("Check floating point subtraction")
+TEST_CASE("Check intermediate result for floating point subtraction")
 {
   const TokenPtr operand_a{ new Token{ "2.36" } };
   const TokenPtr operand_b{ new Token{ "10.87" } };
@@ -79,7 +81,7 @@ TEST_CASE("Check floating point subtraction")
   CHECK(effectively_equal(result, expected_result) == true);
 }
 
-TEST_CASE("Check floating point multiplication")
+TEST_CASE("Check intermediate result for floating point multiplication")
 {
   const TokenPtr operand_a{ new Token{ "0.79" } };
   const TokenPtr operand_b{ new Token{ "1.6" } };
@@ -89,7 +91,7 @@ TEST_CASE("Check floating point multiplication")
   CHECK(effectively_equal(result, expected_result) == true);
 }
 
-TEST_CASE("Check floating point division")
+TEST_CASE("Check intermediate result for floating point division")
 {
   const TokenPtr operand_a{ new Token{ "7.3" } };
   const TokenPtr operand_b{ new Token{ "2.96" } };
@@ -99,7 +101,7 @@ TEST_CASE("Check floating point division")
   CHECK(effectively_equal(result, expected_result, 1e-10f) == true);
 }
 
-TEST_CASE("Check integer addition")
+TEST_CASE("Check intermediate result for integer addition")
 {
   const TokenPtr operand_a{ new Token{ "3" } };
   const TokenPtr operand_b{ new Token{ "4" } };
@@ -108,7 +110,7 @@ TEST_CASE("Check integer addition")
   CHECK(result == 7);
 }
 
-TEST_CASE("Check integer subtraction")
+TEST_CASE("Check intermediate result for integer subtraction")
 {
   const TokenPtr operand_a{ new Token{ "2" } };
   const TokenPtr operand_b{ new Token{ "10" } };
@@ -117,7 +119,7 @@ TEST_CASE("Check integer subtraction")
   CHECK(result == -8);
 }
 
-TEST_CASE("Check integer multiplication")
+TEST_CASE("Check intermediate result for integer multiplication")
 {
   const TokenPtr operand_a{ new Token{ "12" } };
   const TokenPtr operand_b{ new Token{ "-43" } };
@@ -126,7 +128,7 @@ TEST_CASE("Check integer multiplication")
   CHECK(result == -516);
 }
 
-TEST_CASE("Check integer division")
+TEST_CASE("Check intermediate result for integer division")
 {
   const TokenPtr operand_a{ new Token{ "49" } };
   const TokenPtr operand_b{ new Token{ "7" } };
