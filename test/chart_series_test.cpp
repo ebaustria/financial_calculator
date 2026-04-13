@@ -57,3 +57,15 @@ TEST_CASE("Check compounding interest principal after four years")
   };
   check_final_strat_principal(&compound_interest_strategy, total_years);
 }
+
+TEST_CASE("Loan should not amortize with principal 1000, interest rate 5%, payment 3")
+{
+  const LoanRepaymentStrategy loan_repayment_strategy{ 1'000.0, 5.0, 3.0 };
+  CHECK(loan_repayment_strategy.is_amortizing() == false);
+}
+
+TEST_CASE("Loan should amortize with principal 1000, interest rate 5%, payment 5")
+{
+  const LoanRepaymentStrategy loan_repayment_strategy{ 1'000.0, 5.0, 5.0 };
+  CHECK(loan_repayment_strategy.is_amortizing() == true);
+}
