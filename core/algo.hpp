@@ -1,6 +1,7 @@
 #ifndef FINANCIAL_CALCULATOR_ALGO_HPP
 #define FINANCIAL_CALCULATOR_ALGO_HPP
 
+#include <memory>
 #include <queue>
 #include <sstream>
 #include <stack>
@@ -17,12 +18,12 @@ tokenize(const QString& text)
 
   for (qsizetype pos = 0; pos < equation_len; ++pos) {
     const qsizetype token_len = pos - prev_pos;
-    if (QChar ch = text.at(pos); is_operator(ch)) {
+    if (const QChar ch = text.at(pos); is_operator(ch) || is_separator(ch)) {
       if (token_len > 0) {
         TokenPtr tp{ new Token{ text.mid(prev_pos, token_len) } };
         tokens.push_back(tp);
       }
-      if (ch == "(" || ch == ")") {
+      if (is_separator(ch)) {
         TokenPtr tp{ new Token{ ch } };
         tokens.push_back(tp);
         prev_pos = pos + 1;
@@ -67,7 +68,7 @@ reverse_polish(std::queue<TokenPtr>& out_queue)
 {
   std::stack<TokenPtr> stack;
   while (!out_queue.empty()) {
-    if (out_queue.front()->is_number()) {
+    if (is_number(out_queue.front())) {
       stack.push(out_queue.front());
       out_queue.pop();
     } else {
@@ -130,11 +131,11 @@ shunting_yard(const std::vector<TokenPtr>& tokens)
   std::queue<TokenPtr> out_queue;
 
   for (const TokenPtr& tok : tokens) {
-    if (tok->is_number()) {
+    if (is_number(tok)) {
       out_queue.push(tok);
       continue;
     }
-    if (is_operator(tok->value) && tok->value != "(" && tok->value != ")") {
+    if (is_operator(tok->value) && !is_separator(tok->value)) {
       process_operator(tok, stack, out_queue);
       continue;
     }

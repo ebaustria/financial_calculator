@@ -3,6 +3,7 @@
 
 #include <QString>
 #include <memory>
+#include <utility>
 
 enum Associativity
 {
@@ -13,13 +14,12 @@ enum Associativity
 class Token
 {
 public:
-  explicit Token(const QString& val)
-    : value{ val }
+  explicit Token(QString val)
+    : value{ std::move(val) }
   {
   }
 
   virtual ~Token() = default;
-  virtual bool is_number();
 
   QString value;
 };
@@ -28,7 +28,6 @@ class Operator final : public Token
 {
 public:
   explicit Operator(const QString& val);
-  bool is_number() override;
 
   uint8_t precedence{};
   Associativity associativity;
