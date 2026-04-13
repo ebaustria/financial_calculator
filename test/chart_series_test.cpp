@@ -35,7 +35,7 @@ TEST_CASE("Check compounding interest calculation")
     2'000.0, 2.5, 4.0, 10
   };
   const double future_value = compounding_interest_strategy.calculate(5);
-  CHECK(effectively_equal(future_value, 2'063.28614809, 1e-9f) == true);
+  CHECK(effectively_equal(future_value, 2'265.4154767858377) == true);
 }
 
 TEST_CASE("Check amortizing loan repayment calculation")

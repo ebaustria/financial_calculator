@@ -24,7 +24,8 @@ double
 CompoundingInterestStrategy::calculate(const uint32_t period)
 {
   const double int_rate_converted = interest_rate * 0.01;
-  return principal * std::pow(1 + int_rate_converted / compound_rate, period);
+  const double exponent = period * compound_rate;
+  return principal * std::pow(1 + int_rate_converted / compound_rate, exponent);
 }
 
 double

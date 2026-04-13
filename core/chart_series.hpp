@@ -8,9 +8,9 @@ public:
   explicit Strategy(const float prin,
                     const float int_rate,
                     const uint32_t m_periods)
-    : principal{ prin }
+    : max_periods{ m_periods }
+    , principal{ prin }
     , interest_rate{ int_rate }
-    , max_periods{ m_periods }
   {
   }
   virtual ~Strategy() = default;
@@ -40,7 +40,7 @@ public:
   double calculate(uint32_t period) override;
 
 private:
-  float compound_rate;
+  double compound_rate;
 };
 
 class SimpleInterestStrategy : public Strategy
@@ -71,7 +71,7 @@ public:
 
   QList<QPointF> calculate_all() override;
   double calculate(uint32_t period) override;
-  bool is_amortizing() const;
+  [[nodiscard]] bool is_amortizing() const;
 
 private:
   float monthly_payment;
