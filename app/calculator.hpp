@@ -25,7 +25,8 @@ private:
   Ui::CalculatorFrame calculator_frame;
 
   void connect_button(const QPushButton* button, char ch);
-  void update_chart(const QString& title) const;
+  static void update_axis_text(QAbstractAxis* axis, const QString& label);
+  void update_chart(const QString& title, const QString& x_label) const;
   ChartSeries chart_series;
   QChart* chart{ nullptr };
 };

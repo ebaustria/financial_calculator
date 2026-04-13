@@ -64,7 +64,15 @@ Calculator::Calculator(QWidget* parent, const Qt::WindowFlags flags)
   chart->legend()->hide();
   chart->addSeries(chart_series.line_series);
   chart->createDefaultAxes();
+  chart->axes().at(0)->setLabelsBrush(QBrush(Qt::white));
+  chart->axes().at(1)->setLabelsBrush(QBrush(Qt::white));
   chart->setTitle("No Data to Display");
+  chart->setTitleBrush(QBrush(Qt::white));
+  QFont font = chart->titleFont();
+  font.setBold(true);
+  font.setPointSize(12);
+  chart->setTitleFont(font);
+  chart->setBackgroundBrush(QBrush(QColor("#404040")));
   calculator_frame.lineChart->setChart(chart);
 }
 
@@ -99,7 +107,7 @@ Calculator::plot_compounding_interest()
       text_to_uint8(calculator_frame.compoundYearsLineEdit));
     chart_series.set_strategy(&comp_int_strat);
     chart_series.replace_series();
-    update_chart("Compounding Interest");
+    update_chart("Compounding Interest", "Years");
   } catch (std::exception& e) {
     std::cerr << e.what() << std::endl;
   }
@@ -116,7 +124,7 @@ Calculator::plot_simple_interest()
     };
     chart_series.set_strategy(&simple_int_strat);
     chart_series.replace_series();
-    update_chart("Simple Interest");
+    update_chart("Simple Interest", "Years");
   } catch (std::exception& e) {
     std::cerr << e.what() << std::endl;
   }
@@ -132,21 +140,35 @@ Calculator::plot_loan_repayment()
                              text_to_float(calculator_frame.loanPaymentEdit) };
     chart_series.set_strategy(&repayment_strat);
     chart_series.replace_series();
-    update_chart("Loan Repayment");
+    update_chart("Loan Repayment", "Months");
   } catch (std::exception& e) {
     std::cerr << e.what() << std::endl;
   }
 }
 
 void
-Calculator::update_chart(const QString& title) const
+Calculator::update_axis_text(QAbstractAxis* axis, const QString& label)
 {
-  chart->axes(Qt::Horizontal)
-    .first()
-    ->setRange(chart_series.strategy->min_x, chart_series.strategy->max_x);
-  chart->axes(Qt::Vertical)
-    .first()
-    ->setRange(chart_series.strategy->min_y, chart_series.strategy->max_y);
+  axis->setTitleText(label);
+  axis->setTitleBrush(QBrush(Qt::white));
+  QFont font = axis->titleFont();
+  font.setBold(false);
+  font.setPointSize(12);
+  axis->setTitleFont(font);
+}
+
+void
+Calculator::update_chart(const QString& title, const QString& x_label) const
+{
+  const auto x_axis = chart->axes(Qt::Horizontal).first();
+  const auto y_axis = chart->axes(Qt::Vertical).first();
+
+  x_axis->setRange(chart_series.strategy->min_x, chart_series.strategy->max_x);
+  update_axis_text(x_axis, x_label);
+
+  y_axis->setRange(chart_series.strategy->min_y, chart_series.strategy->max_y);
+  update_axis_text(y_axis, "Currency");
+
   chart->setTitle(title);
 }
 
