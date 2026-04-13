@@ -41,15 +41,12 @@ LoanRepaymentStrategy::calculate_all()
   if (is_amortizing()) {
     uint32_t period = 0;
     double remaining_balance = calculate(period);
-    max_y = remaining_balance;
     new_points.append(
       QPointF{ static_cast<double>(period), remaining_balance });
+    max_y = remaining_balance;
     while (remaining_balance > 0.0) {
       period++;
       remaining_balance = calculate(period);
-      if (remaining_balance < 0.0) {
-        remaining_balance = 0.0;
-      }
       new_points.append(
         QPointF{ static_cast<double>(period), remaining_balance });
     }
@@ -68,7 +65,7 @@ LoanRepaymentStrategy::calculate(const uint32_t period)
   const double future_value = principal * total_interest;
   const double fv_annuity =
     monthly_payment * ((total_interest - 1) / monthly_interest);
-  return future_value - fv_annuity;
+  return std::max(0.0, future_value - fv_annuity);
 }
 
 bool
