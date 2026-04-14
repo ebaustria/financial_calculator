@@ -73,6 +73,7 @@ Calculator::Calculator(QWidget* parent, const Qt::WindowFlags flags)
   font.setPointSize(12);
   chart->setTitleFont(font);
   chart->setBackgroundBrush(QBrush(QColor("#404040")));
+  calculator_frame.lineChart->setRenderHint(QPainter::Antialiasing);
   calculator_frame.lineChart->setChart(chart);
 }
 
