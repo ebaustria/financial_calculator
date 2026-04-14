@@ -6,6 +6,20 @@
 
 #include "test_helpers.hpp"
 
+template<uint8_t N>
+void
+check_shunting_yard_order(const QString& str,
+                          const std::array<std::string, N>& expected_order)
+{
+  const std::vector<TokenPtr> tokens = tokenize(str);
+  std::queue<TokenPtr> token_queue = shunting_yard(tokens);
+  REQUIRE(token_queue.size() == N);
+  for (auto val : expected_order) {
+    CHECK(token_queue.front()->value == val);
+    token_queue.pop();
+  }
+}
+
 TEST_CASE("Check tokenization for single binary integer operation")
 {
   const QString str{ "2*6" };
@@ -180,17 +194,35 @@ TEST_CASE("Check intermediate result for integer division")
   CHECK(result == 7);
 }
 
-TEST_CASE("Check shunting yard result")
+TEST_CASE("Check shunting yard result for single binary operation")
+{
+  const QString str{ "27/6" };
+  constexpr uint8_t expected_size{ 3 };
+  const std::array<std::string, expected_size> expected_val_order{ "27",
+                                                                   "6",
+                                                                   "/" };
+  check_shunting_yard_order<expected_size>(str, expected_val_order);
+}
+
+TEST_CASE("Check shunting yard result for equation that ends with parentheses")
 {
   const QString str{ "2*(13+24)" };
-  const std::vector<TokenPtr> tokens = tokenize(str);
-  std::queue<TokenPtr> token_queue = shunting_yard(tokens);
-  REQUIRE(token_queue.size() == 5);
-  for (constexpr std::array expected_val_order{ "2", "13", "24", "+", "*" };
-       auto val : expected_val_order) {
-    CHECK(token_queue.front()->value == val);
-    token_queue.pop();
-  }
+  constexpr uint8_t expected_size{ 5 };
+  const std::array<std::string, expected_size> expected_val_order{
+    "2", "13", "24", "+", "*"
+  };
+  check_shunting_yard_order<expected_size>(str, expected_val_order);
+}
+
+TEST_CASE(
+  "Check shunting yard result for equation that begins with parentheses")
+{
+  const QString str{ "(2.5-3)*33" };
+  constexpr uint8_t expected_size{ 5 };
+  const std::array<std::string, expected_size> expected_val_order{
+    "2.5", "3", "-", "33", "*"
+  };
+  check_shunting_yard_order<expected_size>(str, expected_val_order);
 }
 
 // TEST_CASE("Check equation that starts with '('")
