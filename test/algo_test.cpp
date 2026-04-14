@@ -6,6 +6,54 @@
 
 #include "test_helpers.hpp"
 
+TEST_CASE("Check tokenization for single binary integer operation")
+{
+  const QString str{ "2*6" };
+  const std::vector<TokenPtr> tokens = tokenize(str);
+  REQUIRE(tokens.size() == 3);
+  CHECK(tokens[0]->value == "2");
+  CHECK(tokens[1]->value == "*");
+  CHECK(tokens[2]->value == "6");
+}
+
+TEST_CASE("Check tokenization for single floating point operation")
+{
+  const QString str{ "0.123+52.088" };
+  const std::vector<TokenPtr> tokens = tokenize(str);
+  REQUIRE(tokens.size() == 3);
+  CHECK(tokens[0]->value == "0.123");
+  CHECK(tokens[1]->value == "+");
+  CHECK(tokens[2]->value == "52.088");
+}
+
+TEST_CASE("Check tokenization for operation that begins with parentheses")
+{
+  const QString str{ "(4/2)*23" };
+  const std::vector<TokenPtr> tokens = tokenize(str);
+  REQUIRE(tokens.size() == 7);
+  CHECK(tokens[0]->value == "(");
+  CHECK(tokens[1]->value == "4");
+  CHECK(tokens[2]->value == "/");
+  CHECK(tokens[3]->value == "2");
+  CHECK(tokens[4]->value == ")");
+  CHECK(tokens[5]->value == "*");
+  CHECK(tokens[6]->value == "23");
+}
+
+TEST_CASE("Check tokenization for operation that ends with parentheses")
+{
+  const QString str{ "2*(13+24)" };
+  const std::vector<TokenPtr> tokens = tokenize(str);
+  REQUIRE(tokens.size() == 7);
+  CHECK(tokens[0]->value == "2");
+  CHECK(tokens[1]->value == "*");
+  CHECK(tokens[2]->value == "(");
+  CHECK(tokens[3]->value == "13");
+  CHECK(tokens[4]->value == "+");
+  CHECK(tokens[5]->value == "24");
+  CHECK(tokens[6]->value == ")");
+}
+
 TEST_CASE("Check reverse Polish result for a single binary integer operation")
 {
   const TokenPtr operand_a{ new Token{ QString{ "6" } } };
@@ -130,6 +178,19 @@ TEST_CASE("Check intermediate result for integer division")
   const TokenPtr op{ new Token{ "/" } };
   const double result = intermediate_result(operand_a, operand_b, op);
   CHECK(result == 7);
+}
+
+TEST_CASE("Check shunting yard result")
+{
+  const QString str{ "2*(13+24)" };
+  const std::vector<TokenPtr> tokens = tokenize(str);
+  std::queue<TokenPtr> token_queue = shunting_yard(tokens);
+  REQUIRE(token_queue.size() == 5);
+  for (constexpr std::array expected_val_order{ "2", "13", "24", "+", "*" };
+       auto val : expected_val_order) {
+    CHECK(token_queue.front()->value == val);
+    token_queue.pop();
+  }
 }
 
 // TEST_CASE("Check equation that starts with '('")
