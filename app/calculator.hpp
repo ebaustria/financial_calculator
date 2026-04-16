@@ -20,6 +20,8 @@ private slots:
   void plot_compounding_interest();
   void plot_simple_interest();
   void plot_loan_repayment();
+  void from_currency_changed(int new_from_index);
+  void to_currency_changed(int new_to_index);
 
 private:
   Ui::CalculatorFrame calculator_frame;
@@ -28,6 +30,8 @@ private:
   static void update_axis_text(QAbstractAxis* axis, const QString& label);
   void update_chart(const QString& title, const QString& x_label) const;
   void set_up_chart() const;
+  int from_currency_index;
+  int to_currency_index;
   ChartSeries chart_series;
   QChart* chart{ nullptr };
 };

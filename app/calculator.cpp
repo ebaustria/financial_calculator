@@ -60,16 +60,24 @@ Calculator::Calculator(QWidget* parent, const Qt::WindowFlags flags)
           &QPushButton::clicked,
           this,
           &Calculator::plot_loan_repayment);
-  // connect(calculator_frame.fromCurrencyComboBox,
-  //         &QComboBox::currentTextChanged,
-  //         this,
-  //         &Calculator::on_currency_changed);
+  connect(calculator_frame.fromCurrencyComboBox,
+          &QComboBox::currentIndexChanged,
+          this,
+          &Calculator::from_currency_changed);
+  connect(calculator_frame.toCurrencyComboBox,
+          &QComboBox::currentIndexChanged,
+          this,
+          &Calculator::to_currency_changed);
 
   QStringList available_currencies{ "USD", "EUR", "GBP", "CHF", "AUD",
                                     "CAD", "INR", "JPY", "CNY" };
   calculator_frame.fromCurrencyComboBox->insertItems(0, available_currencies);
-  available_currencies.swapItemsAt(0, 1);
   calculator_frame.toCurrencyComboBox->insertItems(0, available_currencies);
+  calculator_frame.fromCurrencyComboBox->setCurrentIndex(0);
+  calculator_frame.toCurrencyComboBox->setCurrentIndex(1);
+  from_currency_index = calculator_frame.fromCurrencyComboBox->currentIndex();
+  to_currency_index = calculator_frame.toCurrencyComboBox->currentIndex();
+
   set_up_chart();
 }
 
@@ -96,6 +104,24 @@ Calculator::set_up_chart() const
   chart->setBackgroundBrush(QBrush(QColor("#404040")));
   calculator_frame.lineChart->setRenderHint(QPainter::Antialiasing);
   calculator_frame.lineChart->setChart(chart);
+}
+
+void
+Calculator::from_currency_changed(const int new_from_index)
+{
+  if (new_from_index == calculator_frame.toCurrencyComboBox->currentIndex()) {
+    calculator_frame.toCurrencyComboBox->setCurrentIndex(from_currency_index);
+  }
+  from_currency_index = new_from_index;
+}
+
+void
+Calculator::to_currency_changed(const int new_to_index)
+{
+  if (new_to_index == calculator_frame.fromCurrencyComboBox->currentIndex()) {
+    calculator_frame.fromCurrencyComboBox->setCurrentIndex(to_currency_index);
+  }
+  to_currency_index = new_to_index;
 }
 
 void
