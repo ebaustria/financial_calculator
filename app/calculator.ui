@@ -172,7 +172,7 @@
       <item>
        <widget class="QLabel" name="loanRepaymentTitle">
         <property name="text">
-         <string>Loan Repayment</string>
+         <string>Loan Remaining Balance</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignmentFlag::AlignCenter</set>

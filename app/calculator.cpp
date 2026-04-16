@@ -63,6 +63,7 @@ Calculator::Calculator(QWidget* parent, const Qt::WindowFlags flags)
 
   chart->legend()->hide();
   chart->addSeries(chart_series.line_series);
+  chart->setAnimationOptions(QChart::SeriesAnimations);
   chart->createDefaultAxes();
   chart->axes().at(0)->setLabelsBrush(QBrush(Qt::white));
   chart->axes().at(1)->setLabelsBrush(QBrush(Qt::white));
