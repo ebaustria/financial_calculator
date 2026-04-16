@@ -60,7 +60,27 @@ Calculator::Calculator(QWidget* parent, const Qt::WindowFlags flags)
           &QPushButton::clicked,
           this,
           &Calculator::plot_loan_repayment);
+  // connect(calculator_frame.fromCurrencyComboBox,
+  //         &QComboBox::currentTextChanged,
+  //         this,
+  //         &Calculator::on_currency_changed);
 
+  QStringList available_currencies{ "USD", "EUR", "GBP", "CHF", "AUD",
+                                    "CAD", "INR", "JPY", "CNY" };
+  calculator_frame.fromCurrencyComboBox->insertItems(0, available_currencies);
+  available_currencies.swapItemsAt(0, 1);
+  calculator_frame.toCurrencyComboBox->insertItems(0, available_currencies);
+  set_up_chart();
+}
+
+Calculator::~Calculator()
+{
+  delete chart;
+}
+
+void
+Calculator::set_up_chart() const
+{
   chart->legend()->hide();
   chart->addSeries(chart_series.line_series);
   chart->setAnimationOptions(QChart::SeriesAnimations);
@@ -76,11 +96,6 @@ Calculator::Calculator(QWidget* parent, const Qt::WindowFlags flags)
   chart->setBackgroundBrush(QBrush(QColor("#404040")));
   calculator_frame.lineChart->setRenderHint(QPainter::Antialiasing);
   calculator_frame.lineChart->setChart(chart);
-}
-
-Calculator::~Calculator()
-{
-  delete chart;
 }
 
 void

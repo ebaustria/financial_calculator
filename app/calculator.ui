@@ -20,94 +20,7 @@
    <string>Frame</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0" rowspan="2" colspan="2">
-    <widget class="QWidget" name="plotViewer" native="true">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <layout class="QVBoxLayout" name="verticalLayout" stretch="0">
-      <item>
-       <widget class="QChartView" name="lineChart" native="true"/>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item row="0" column="2">
-    <widget class="QWidget" name="compoundInterestControlPanel" native="true">
-     <layout class="QVBoxLayout" name="verticalLayout_3">
-      <item>
-       <widget class="QLabel" name="compoundInterestLabel">
-        <property name="text">
-         <string>Compound Interest</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignmentFlag::AlignCenter</set>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QWidget" name="compoundForm" native="true">
-        <layout class="QFormLayout" name="roiFormLayout">
-         <property name="horizontalSpacing">
-          <number>6</number>
-         </property>
-         <item row="0" column="1">
-          <widget class="QLineEdit" name="compoundPrincipalEdit"/>
-         </item>
-         <item row="0" column="0">
-          <widget class="QLabel" name="compoundPrincipalLabel">
-           <property name="text">
-            <string>Principal:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1">
-          <widget class="QLineEdit" name="compoundLineEdit"/>
-         </item>
-         <item row="1" column="0">
-          <widget class="QLabel" name="compoundLabel">
-           <property name="text">
-            <string>Interest rate (%):</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="1">
-          <widget class="QLineEdit" name="compoundRateLineEdit"/>
-         </item>
-         <item row="2" column="0">
-          <widget class="QLabel" name="compoundRateLabel">
-           <property name="text">
-            <string>Annual compound rate:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="0">
-          <widget class="QLabel" name="compoundYearsLabel">
-           <property name="text">
-            <string>Years:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="1">
-          <widget class="QLineEdit" name="compoundYearsLineEdit"/>
-         </item>
-        </layout>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="plotCompoundInterestButton">
-        <property name="text">
-         <string>Plot</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item row="1" column="2">
+   <item row="2" column="2">
     <widget class="QWidget" name="simpleInterestControlPanel" native="true">
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>
@@ -166,7 +79,62 @@
      </layout>
     </widget>
    </item>
-   <item row="2" column="2">
+   <item row="0" column="2">
+    <widget class="QWidget" name="currencyConversionControlPanel" native="true">
+     <layout class="QVBoxLayout" name="verticalLayout_6">
+      <item>
+       <widget class="QLabel" name="currencyConversionTitle">
+        <property name="text">
+         <string>Currency Conversion</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignmentFlag::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QWidget" name="currencyConversionForm" native="true">
+        <layout class="QHBoxLayout" name="horizontalLayout">
+         <item>
+          <widget class="QComboBox" name="fromCurrencyComboBox">
+           <property name="currentText">
+            <string/>
+           </property>
+           <property name="placeholderText">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QDoubleSpinBox" name="fromCurrencySpinBox"/>
+         </item>
+         <item>
+          <widget class="QComboBox" name="toCurrencyComboBox">
+           <property name="currentText">
+            <string/>
+           </property>
+           <property name="placeholderText">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QDoubleSpinBox" name="toCurrencySpinBox"/>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="lineEdit">
+           <property name="readOnly">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="3" column="2">
     <widget class="QWidget" name="loanRepaymentControlPanel" native="true">
      <layout class="QVBoxLayout" name="verticalLayout_4">
       <item>
@@ -225,7 +193,7 @@
      </layout>
     </widget>
    </item>
-   <item row="2" column="0" rowspan="2">
+   <item row="3" column="0" rowspan="2">
     <widget class="QWidget" name="calculator" native="true">
      <layout class="QVBoxLayout" name="verticalLayout_5">
       <item>
@@ -509,6 +477,93 @@
          </item>
         </layout>
        </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="1" column="2">
+    <widget class="QWidget" name="compoundInterestControlPanel" native="true">
+     <layout class="QVBoxLayout" name="verticalLayout_3">
+      <item>
+       <widget class="QLabel" name="compoundInterestLabel">
+        <property name="text">
+         <string>Compound Interest</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignmentFlag::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QWidget" name="compoundForm" native="true">
+        <layout class="QFormLayout" name="roiFormLayout">
+         <property name="horizontalSpacing">
+          <number>6</number>
+         </property>
+         <item row="0" column="1">
+          <widget class="QLineEdit" name="compoundPrincipalEdit"/>
+         </item>
+         <item row="0" column="0">
+          <widget class="QLabel" name="compoundPrincipalLabel">
+           <property name="text">
+            <string>Principal:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QLineEdit" name="compoundLineEdit"/>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="compoundLabel">
+           <property name="text">
+            <string>Interest rate (%):</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QLineEdit" name="compoundRateLineEdit"/>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="compoundRateLabel">
+           <property name="text">
+            <string>Annual compound rate:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="0">
+          <widget class="QLabel" name="compoundYearsLabel">
+           <property name="text">
+            <string>Years:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="1">
+          <widget class="QLineEdit" name="compoundYearsLineEdit"/>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="plotCompoundInterestButton">
+        <property name="text">
+         <string>Plot</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="1" column="0" rowspan="2" colspan="2">
+    <widget class="QWidget" name="plotViewer" native="true">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout" stretch="0">
+      <item>
+       <widget class="QChartView" name="lineChart" native="true"/>
       </item>
      </layout>
     </widget>

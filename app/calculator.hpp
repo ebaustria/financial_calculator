@@ -27,6 +27,7 @@ private:
   void connect_button(const QPushButton* button, char ch);
   static void update_axis_text(QAbstractAxis* axis, const QString& label);
   void update_chart(const QString& title, const QString& x_label) const;
+  void set_up_chart() const;
   ChartSeries chart_series;
   QChart* chart{ nullptr };
 };
