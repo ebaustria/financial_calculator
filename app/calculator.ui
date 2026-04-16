@@ -96,6 +96,13 @@
        <widget class="QWidget" name="currencyConversionForm" native="true">
         <layout class="QHBoxLayout" name="horizontalLayout">
          <item>
+          <widget class="QLabel" name="fromCurrencyLabel">
+           <property name="text">
+            <string>From:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
           <widget class="QComboBox" name="fromCurrencyComboBox">
            <property name="currentText">
             <string/>
@@ -109,6 +116,13 @@
           <widget class="QDoubleSpinBox" name="fromCurrencySpinBox"/>
          </item>
          <item>
+          <widget class="QLabel" name="toCurrencyLabel">
+           <property name="text">
+            <string>To:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
           <widget class="QComboBox" name="toCurrencyComboBox">
            <property name="currentText">
             <string/>
@@ -119,10 +133,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QDoubleSpinBox" name="toCurrencySpinBox"/>
-         </item>
-         <item>
-          <widget class="QLineEdit" name="lineEdit">
+          <widget class="QLineEdit" name="currencyConversionResult">
            <property name="readOnly">
             <bool>true</bool>
            </property>
