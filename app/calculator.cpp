@@ -7,6 +7,7 @@
 #include <regex>
 
 #include "core/algo.hpp"
+#include "core/currency_conversion.hpp"
 
 // QRegularExpression Calculator::exp{ R"(^\D*\.\d*$)" };
 
@@ -68,15 +69,21 @@ Calculator::Calculator(QWidget* parent, const Qt::WindowFlags flags)
           &QComboBox::currentIndexChanged,
           this,
           &Calculator::to_currency_changed);
+  connect(calculator_frame.fromCurrencySpinBox,
+          &QDoubleSpinBox::valueChanged,
+          this,
+          &Calculator::currency_amount_changed);
 
-  QStringList available_currencies{ "USD", "EUR", "GBP", "CHF", "AUD",
-                                    "CAD", "INR", "JPY", "CNY" };
+  const QStringList available_currencies{ "USD", "EUR", "GBP", "CHF", "AUD",
+                                          "CAD", "INR", "JPY", "CNY" };
   calculator_frame.fromCurrencyComboBox->insertItems(0, available_currencies);
   calculator_frame.toCurrencyComboBox->insertItems(0, available_currencies);
   calculator_frame.fromCurrencyComboBox->setCurrentIndex(0);
   calculator_frame.toCurrencyComboBox->setCurrentIndex(1);
   from_currency_index = calculator_frame.fromCurrencyComboBox->currentIndex();
   to_currency_index = calculator_frame.toCurrencyComboBox->currentIndex();
+  calculator_frame.currencyConversionResult->setText(
+    QString::number(conversion_result));
 
   set_up_chart();
 }
@@ -107,21 +114,57 @@ Calculator::set_up_chart() const
 }
 
 void
+Calculator::currency_amount_changed(double new_amount)
+{
+  if (from_currency_index != INVALID_CURRENCY_INDEX &&
+      to_currency_index != INVALID_CURRENCY_INDEX) {
+    update_conversion_result();
+  }
+}
+
+void
 Calculator::from_currency_changed(const int new_from_index)
 {
-  if (new_from_index == calculator_frame.toCurrencyComboBox->currentIndex()) {
+  const bool swapped{ new_from_index ==
+                      calculator_frame.toCurrencyComboBox->currentIndex() };
+  if (swapped) {
     calculator_frame.toCurrencyComboBox->setCurrentIndex(from_currency_index);
   }
+
   from_currency_index = new_from_index;
+
+  if (!swapped && from_currency_index != INVALID_CURRENCY_INDEX &&
+      to_currency_index != INVALID_CURRENCY_INDEX) {
+    update_conversion_result();
+  }
 }
 
 void
 Calculator::to_currency_changed(const int new_to_index)
 {
-  if (new_to_index == calculator_frame.fromCurrencyComboBox->currentIndex()) {
+  const bool swapped{ new_to_index ==
+                      calculator_frame.fromCurrencyComboBox->currentIndex() };
+  if (swapped) {
     calculator_frame.fromCurrencyComboBox->setCurrentIndex(to_currency_index);
   }
+
   to_currency_index = new_to_index;
+
+  if (!swapped && from_currency_index != INVALID_CURRENCY_INDEX &&
+      to_currency_index != INVALID_CURRENCY_INDEX) {
+    update_conversion_result();
+  }
+}
+
+void
+Calculator::update_conversion_result()
+{
+  conversion_result =
+    convert_currency(calculator_frame.fromCurrencyComboBox->currentText(),
+                   calculator_frame.toCurrencyComboBox->currentText(),
+                   calculator_frame.fromCurrencySpinBox->value());
+  calculator_frame.currencyConversionResult->setText(
+    QString::number(conversion_result));
 }
 
 void
