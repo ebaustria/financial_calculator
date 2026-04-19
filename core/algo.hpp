@@ -68,7 +68,7 @@ reverse_polish(std::queue<TokenPtr>& out_queue)
 {
   std::stack<TokenPtr> stack;
   while (!out_queue.empty()) {
-    if (is_number(out_queue.front())) {
+    if (is_number(out_queue.front()->value)) {
       stack.push(out_queue.front());
       out_queue.pop();
     } else {
@@ -131,7 +131,7 @@ shunting_yard(const std::vector<TokenPtr>& tokens)
   std::queue<TokenPtr> out_queue;
 
   for (const TokenPtr& tok : tokens) {
-    if (is_number(tok)) {
+    if (is_number(tok->value)) {
       out_queue.push(tok);
       continue;
     }

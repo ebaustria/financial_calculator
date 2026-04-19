@@ -1,7 +1,6 @@
 #ifndef CALC_HELPER_FUNCTIONS_HPP
 #define CALC_HELPER_FUNCTIONS_HPP
 
-#include <QLineEdit>
 #include <sstream>
 
 #include "core/token.hpp"
@@ -9,26 +8,15 @@
 static std::array operators{ '*', '/', '+', '-' };
 static std::array separators{ '(', ')' };
 
-static float
-text_to_float(const QLineEdit* line_edit)
-{
-  return line_edit->text().toFloat();
-}
-
-static uint8_t
-text_to_uint8(const QLineEdit* line_edit)
-{
-  return line_edit->text().toUInt();
-}
-
 static bool
-is_number(const TokenPtr& token)
+is_number(const QString& str)
 {
   double dub;
-  if (token->value.startsWith('.')) {
-    token->value.insert(0, '0');
+  std::string std_str = str.toStdString();
+  if (std_str.rfind('.', 0) == 0) {
+    std_str.insert(0, 1, '0');
   }
-  std::istringstream iss(token->value.toStdString());
+  std::istringstream iss(std_str);
   iss >> std::noskipws >> dub;
   return iss.eof() && !iss.fail();
 }

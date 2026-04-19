@@ -1,5 +1,4 @@
 #include "calculator.hpp"
-#include "core/calc_helper_functions.hpp"
 
 #include <QRegularExpressionValidator>
 #include <iostream>
@@ -213,11 +212,12 @@ void
 Calculator::plot_compounding_interest()
 {
   try {
-    auto comp_int_strat = CompoundingInterestStrategy(
-      text_to_float(calculator_frame.compoundPrincipalEdit),
-      text_to_float(calculator_frame.compoundLineEdit),
-      text_to_float(calculator_frame.compoundRateLineEdit),
-      text_to_uint8(calculator_frame.compoundYearsLineEdit));
+    auto comp_int_strat = CompoundingInterestStrategy{
+      calculator_frame.compoundPrincipalEdit->text(),
+      calculator_frame.compoundLineEdit->text(),
+      calculator_frame.compoundRateLineEdit->text(),
+      calculator_frame.compoundYearsLineEdit->text()
+    };
     chart_series.set_strategy(&comp_int_strat);
     chart_series.replace_series();
     update_chart("Compounding Interest", "Years");
@@ -230,11 +230,10 @@ void
 Calculator::plot_simple_interest()
 {
   try {
-    auto simple_int_strat = SimpleInterestStrategy{
-      text_to_float(calculator_frame.simplePrincipalLineEdit),
-      text_to_float(calculator_frame.simpleLineEdit),
-      text_to_uint8(calculator_frame.simpleYearsLineEdit)
-    };
+    auto simple_int_strat =
+      SimpleInterestStrategy{ calculator_frame.simplePrincipalLineEdit->text(),
+                              calculator_frame.simpleLineEdit->text(),
+                              calculator_frame.simpleYearsLineEdit->text() };
     chart_series.set_strategy(&simple_int_strat);
     chart_series.replace_series();
     update_chart("Simple Interest", "Years");
@@ -248,9 +247,9 @@ Calculator::plot_loan_repayment()
 {
   try {
     auto repayment_strat =
-      LoanRepaymentStrategy{ text_to_float(calculator_frame.loanPrincipalEdit),
-                             text_to_float(calculator_frame.loanInterestEdit),
-                             text_to_float(calculator_frame.loanPaymentEdit) };
+      LoanRepaymentStrategy{ calculator_frame.loanPrincipalEdit->text(),
+                             calculator_frame.loanInterestEdit->text(),
+                             calculator_frame.loanPaymentEdit->text() };
     chart_series.set_strategy(&repayment_strat);
     chart_series.replace_series();
     update_chart("Loan Repayment", "Months");

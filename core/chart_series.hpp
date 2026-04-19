@@ -2,17 +2,31 @@
 #define FINANCIAL_CALCULATOR_CHART_SERIES_HPP
 #include <QtCharts/QLineSeries>
 
+class InputChecker
+{
+public:
+  InputChecker() = default;
+  virtual ~InputChecker() = default;
+  virtual void check_input(const QString& input, const std::string& arg_name);
+};
+
+class InputCheckerDecorator : public InputChecker
+{
+public:
+  explicit InputCheckerDecorator(InputChecker* input_checker);
+  void check_input(const QString& input, const std::string& arg_name) override;
+
+private:
+  static bool is_integer(const QString& str);
+  InputChecker* wrappee;
+};
+
 class Strategy
 {
 public:
-  explicit Strategy(const float prin,
-                    const float int_rate,
-                    const uint32_t m_periods)
-    : max_periods{ m_periods }
-    , principal{ prin }
-    , interest_rate{ int_rate }
-  {
-  }
+  explicit Strategy(const QString& prin,
+                    const QString& int_rate,
+                    const QString& m_periods);
   virtual ~Strategy() = default;
   virtual double calculate(uint32_t period) = 0;
   virtual QList<QPointF> calculate_all();
@@ -23,19 +37,18 @@ public:
   uint32_t max_x{ 0 };
   double min_y{ 0 };
   double max_y{ 0 };
+
+protected:
+  InputChecker input_checker;
 };
 
 class CompoundingInterestStrategy : public Strategy
 {
 public:
-  CompoundingInterestStrategy(const float prin,
-                              const float int_rate,
-                              const float comp_rate,
-                              const uint32_t t_periods)
-    : Strategy{ prin, int_rate, t_periods }
-    , compound_rate{ comp_rate }
-  {
-  }
+  CompoundingInterestStrategy(const QString& prin,
+                              const QString& int_rate,
+                              const QString& comp_rate,
+                              const QString& m_periods);
 
   double calculate(uint32_t period) override;
 
@@ -46,10 +59,10 @@ private:
 class SimpleInterestStrategy : public Strategy
 {
 public:
-  SimpleInterestStrategy(const float prin,
-                         const float int_rate,
-                         const uint32_t t_periods)
-    : Strategy{ prin, int_rate, t_periods }
+  SimpleInterestStrategy(const QString& prin,
+                         const QString& int_rate,
+                         const QString& m_periods)
+    : Strategy{ prin, int_rate, m_periods }
   {
   }
 
@@ -59,15 +72,9 @@ public:
 class LoanRepaymentStrategy : public Strategy
 {
 public:
-  LoanRepaymentStrategy(const float prin,
-                        const float int_rate,
-                        const float payment)
-    : Strategy{ prin, int_rate, 120 }
-    , monthly_payment{ payment }
-  {
-    const double int_rate_converted = interest_rate * 0.01;
-    monthly_interest = int_rate_converted / 12;
-  }
+  LoanRepaymentStrategy(const QString& prin,
+                        const QString& int_rate,
+                        const QString& payment);
 
   QList<QPointF> calculate_all() override;
   double calculate(uint32_t period) override;
