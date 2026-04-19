@@ -31,8 +31,8 @@ private:
 
   void connect_button(const QPushButton* button, char ch);
   static void update_axis_text(QAbstractAxis* axis, const QString& label);
-  static void set_validators_for_form(const QWidget* form);
-  static void set_validator(QLineEdit* line_edit);
+  static void set_validators_for_numeric_form(const QWidget* form);
+  static void set_numeric_validator(QLineEdit* line_edit);
   void update_chart(const QString& title, const QString& x_label) const;
   void update_conversion_result();
   void set_up_chart() const;

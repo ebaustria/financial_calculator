@@ -16,10 +16,10 @@ Calculator::Calculator(QWidget* parent, const Qt::WindowFlags flags)
 {
   chart = new QChart;
   calculator_frame.setupUi(this);
-  set_validator(calculator_frame.equationEdit);
-  set_validators_for_form(calculator_frame.compoundForm);
-  set_validators_for_form(calculator_frame.simpleInterestForm);
-  set_validators_for_form(calculator_frame.loanRepaymentForm);
+  set_numeric_validator(calculator_frame.equationEdit);
+  set_validators_for_numeric_form(calculator_frame.compoundForm);
+  set_validators_for_numeric_form(calculator_frame.simpleInterestForm);
+  set_validators_for_numeric_form(calculator_frame.loanRepaymentForm);
 
   connect_button(calculator_frame.pushButton_0, '0');
   connect_button(calculator_frame.pushButton_1, '1');
@@ -98,18 +98,18 @@ Calculator::~Calculator()
 }
 
 void
-Calculator::set_validators_for_form(const QWidget* form)
+Calculator::set_validators_for_numeric_form(const QWidget* form)
 {
   for (const auto child : form->children()) {
     if (auto* line_edit_ptr = dynamic_cast<QLineEdit*>(child);
         line_edit_ptr != nullptr) {
-      set_validator(line_edit_ptr);
+      set_numeric_validator(line_edit_ptr);
     }
   }
 }
 
 void
-Calculator::set_validator(QLineEdit* line_edit)
+Calculator::set_numeric_validator(QLineEdit* line_edit)
 {
   line_edit->setValidator(new QRegularExpressionValidator(
     QRegularExpression("^[^A-Za-zÄÖÜäöüß]+$"), line_edit));
