@@ -82,7 +82,6 @@ class ChartSeries
 {
 public:
   ChartSeries();
-  ~ChartSeries();
   void set_strategy(Strategy* strat);
   void replace_series() const;
 

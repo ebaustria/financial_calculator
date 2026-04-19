@@ -80,11 +80,6 @@ ChartSeries::ChartSeries()
   line_series = new QLineSeries{};
 }
 
-ChartSeries::~ChartSeries()
-{
-  delete line_series;
-}
-
 void
 ChartSeries::set_strategy(Strategy* strat)
 {
