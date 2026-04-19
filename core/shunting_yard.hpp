@@ -1,12 +1,11 @@
-#ifndef FINANCIAL_CALCULATOR_ALGO_HPP
-#define FINANCIAL_CALCULATOR_ALGO_HPP
+#ifndef FINANCIAL_CALCULATOR_SHUNTING_YARD_HPP
+#define FINANCIAL_CALCULATOR_SHUNTING_YARD_HPP
 
 #include <memory>
 #include <queue>
 #include <sstream>
 #include <stack>
 
-#include "calc_helper_functions.hpp"
 #include "token.hpp"
 
 static std::vector<TokenPtr>
@@ -162,4 +161,4 @@ shunting_yard(const std::vector<TokenPtr>& tokens)
   return out_queue;
 }
 
-#endif // FINANCIAL_CALCULATOR_ALGO_HPP
+#endif // FINANCIAL_CALCULATOR_SHUNTING_YARD_HPP

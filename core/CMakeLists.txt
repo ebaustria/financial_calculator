@@ -2,8 +2,7 @@ cmake_minimum_required(VERSION 4.0)
 project(core)
 
 qt_add_library(core
-        calc_helper_functions.hpp
-        algo.hpp
+        shunting_yard.hpp
         chart_series.hpp
         chart_series.cpp
         token.hpp

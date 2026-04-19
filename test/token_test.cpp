@@ -1,8 +1,6 @@
 #include "core/token.hpp"
 #include <catch2/catch_test_macros.hpp>
 
-#include "core/calc_helper_functions.hpp"
-
 TEST_CASE("Check if integer token is number")
 {
   const QString str{ "7" };

@@ -1,12 +1,11 @@
 #include "calculator.hpp"
 
 #include <QRegularExpressionValidator>
-#include <iostream>
 #include <queue>
 #include <regex>
 
-#include "core/algo.hpp"
 #include "core/currency_conversion.hpp"
+#include "core/shunting_yard.hpp"
 
 // QRegularExpression Calculator::exp{ R"(^\D*\.\d*$)" };
 

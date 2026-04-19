@@ -1,8 +1,8 @@
-#include "core/calc_helper_functions.hpp"
+#include "core/token.hpp"
 #include <catch2/catch_test_macros.hpp>
 #include <cmath>
 
-#include "core/algo.hpp"
+#include "core/shunting_yard.hpp"
 
 #include "test_helpers.hpp"
 

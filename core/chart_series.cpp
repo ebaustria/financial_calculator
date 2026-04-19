@@ -1,5 +1,5 @@
 #include "chart_series.hpp"
-#include "calc_helper_functions.hpp"
+#include "token.hpp"
 #include <cmath>
 
 bool
