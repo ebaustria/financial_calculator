@@ -87,6 +87,9 @@ Calculator::Calculator(QWidget* parent, const Qt::WindowFlags flags)
     QString::number(conversion_result));
   calculator_frame.calculatorErrorLabel->setStyleSheet("color: red;");
   calculator_frame.currencyConversionErrorLabel->setStyleSheet("color: red;");
+  calculator_frame.compoundInterestErrorLabel->setStyleSheet("color: red;");
+  calculator_frame.simpleInterestErrorLabel->setStyleSheet("color: red;");
+  calculator_frame.loanRepaymentErrorLabel->setStyleSheet("color: red;");
 
   set_up_chart();
 }
@@ -221,8 +224,9 @@ Calculator::plot_compounding_interest()
     chart_series.set_strategy(&comp_int_strat);
     chart_series.replace_series();
     update_chart("Compounding Interest", "Years");
+    calculator_frame.compoundInterestErrorLabel->clear();
   } catch (std::exception& e) {
-    std::cerr << e.what() << std::endl;
+    calculator_frame.compoundInterestErrorLabel->setText(e.what());
   }
 }
 
@@ -237,8 +241,9 @@ Calculator::plot_simple_interest()
     chart_series.set_strategy(&simple_int_strat);
     chart_series.replace_series();
     update_chart("Simple Interest", "Years");
+    calculator_frame.simpleInterestErrorLabel->clear();
   } catch (std::exception& e) {
-    std::cerr << e.what() << std::endl;
+    calculator_frame.simpleInterestErrorLabel->setText(e.what());
   }
 }
 
@@ -253,8 +258,9 @@ Calculator::plot_loan_repayment()
     chart_series.set_strategy(&repayment_strat);
     chart_series.replace_series();
     update_chart("Loan Repayment", "Months");
+    calculator_frame.loanRepaymentErrorLabel->clear();
   } catch (std::exception& e) {
-    std::cerr << e.what() << std::endl;
+    calculator_frame.loanRepaymentErrorLabel->setText(e.what());
   }
 }
 

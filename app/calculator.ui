@@ -70,6 +70,13 @@
        </widget>
       </item>
       <item>
+       <widget class="QLabel" name="simpleInterestErrorLabel">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QPushButton" name="plotSimpleInterestButton">
         <property name="text">
          <string>Plot</string>
@@ -209,6 +216,13 @@
           <widget class="QLineEdit" name="loanInterestEdit"/>
          </item>
         </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="loanRepaymentErrorLabel">
+        <property name="text">
+         <string/>
+        </property>
        </widget>
       </item>
       <item>
@@ -583,6 +597,13 @@
           <widget class="QLineEdit" name="compoundYearsLineEdit"/>
          </item>
         </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="compoundInterestErrorLabel">
+        <property name="text">
+         <string/>
+        </property>
        </widget>
       </item>
       <item>
