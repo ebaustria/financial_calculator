@@ -201,7 +201,7 @@
          <item row="2" column="0">
           <widget class="QLabel" name="loanInterestLabel">
            <property name="text">
-            <string>Annual interest rate:</string>
+            <string>Annual interest rate (%):</string>
            </property>
           </widget>
          </item>
@@ -556,10 +556,17 @@
           </widget>
          </item>
          <item row="2" column="1">
-          <widget class="QLineEdit" name="compoundRateLineEdit"/>
+          <widget class="QLineEdit" name="compoundRateLineEdit">
+           <property name="toolTip">
+            <string>Number of times per year the interest rate compounds</string>
+           </property>
+          </widget>
          </item>
          <item row="2" column="0">
           <widget class="QLabel" name="compoundRateLabel">
+           <property name="toolTip">
+            <string>Number of times per year the interest rate compounds</string>
+           </property>
            <property name="text">
             <string>Annual compound rate:</string>
            </property>
