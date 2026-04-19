@@ -152,6 +152,13 @@
         </layout>
        </widget>
       </item>
+      <item>
+       <widget class="QLabel" name="currencyConversionErrorLabel">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>
@@ -226,6 +233,13 @@
       </item>
       <item>
        <widget class="QLineEdit" name="equationEdit"/>
+      </item>
+      <item>
+       <widget class="QLabel" name="calculatorErrorLabel">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
       </item>
       <item>
        <widget class="QWidget" name="keypad" native="true">

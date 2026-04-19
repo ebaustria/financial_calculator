@@ -14,5 +14,5 @@ main(int argc, char* argv[])
   window.setCentralWidget(&calculator);
   window.show();
 
-  return app.exec();
+  return QApplication::exec();
 }

@@ -23,6 +23,11 @@ convert_currency(const QString& from, const QString& to, const double amount)
               << "&to=" << to.toStdString();
 
   const cpr::Response r = cpr::Get(cpr::Url{ url_sstream.str() });
+
+  if (r.error.code != cpr::ErrorCode::OK) {
+    throw std::runtime_error(r.error.message);
+  }
+
   auto json_response = nlohmann::json::parse(r.text);
   const double result = json_response["rates"][to.toStdString()];
   return result;

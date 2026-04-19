@@ -84,6 +84,8 @@ Calculator::Calculator(QWidget* parent, const Qt::WindowFlags flags)
   to_currency_index = calculator_frame.toCurrencyComboBox->currentIndex();
   calculator_frame.currencyConversionResult->setText(
     QString::number(conversion_result));
+  calculator_frame.calculatorErrorLabel->setStyleSheet("color: red;");
+  calculator_frame.currencyConversionErrorLabel->setStyleSheet("color: red;");
 
   set_up_chart();
 }
@@ -159,12 +161,17 @@ Calculator::to_currency_changed(const int new_to_index)
 void
 Calculator::update_conversion_result()
 {
-  conversion_result =
-    convert_currency(calculator_frame.fromCurrencyComboBox->currentText(),
-                   calculator_frame.toCurrencyComboBox->currentText(),
-                   calculator_frame.fromCurrencySpinBox->value());
-  calculator_frame.currencyConversionResult->setText(
-    QString::number(conversion_result));
+  try {
+    conversion_result =
+      convert_currency(calculator_frame.fromCurrencyComboBox->currentText(),
+                       calculator_frame.toCurrencyComboBox->currentText(),
+                       calculator_frame.fromCurrencySpinBox->value());
+    calculator_frame.currencyConversionResult->setText(
+      QString::number(conversion_result));
+    calculator_frame.currencyConversionErrorLabel->clear();
+  } catch (std::exception& e) {
+    calculator_frame.currencyConversionErrorLabel->setText(e.what());
+  }
 }
 
 void
@@ -266,7 +273,8 @@ Calculator::calculate_result() const
       shunting_yard(tokenize(calculator_frame.equationEdit->text()));
     const QString result = reverse_polish(out_queue);
     calculator_frame.resultEdit->setText(result);
+    calculator_frame.calculatorErrorLabel->clear();
   } catch (std::exception& e) {
-    std::cerr << e.what() << std::endl;
+    calculator_frame.calculatorErrorLabel->setText(e.what());
   }
 }

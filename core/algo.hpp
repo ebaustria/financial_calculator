@@ -148,7 +148,7 @@ shunting_yard(const std::vector<TokenPtr>& tokens)
       continue;
     }
     std::stringstream string_stream;
-    string_stream << "Token '" << tok->value.toStdString()
+    string_stream << "'" << tok->value.toStdString()
                   << "' is not a number or mathematical operator.";
     throw std::runtime_error(string_stream.str());
   }

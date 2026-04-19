@@ -22,13 +22,13 @@ text_to_uint8(const QLineEdit* line_edit)
 }
 
 static bool
-is_number(const TokenPtr& str)
+is_number(const TokenPtr& token)
 {
   double dub;
-  if (str->value.startsWith('.')) {
-    str->value.insert(0, '0');
+  if (token->value.startsWith('.')) {
+    token->value.insert(0, '0');
   }
-  std::istringstream iss(str->value.toStdString());
+  std::istringstream iss(token->value.toStdString());
   iss >> std::noskipws >> dub;
   return iss.eof() && !iss.fail();
 }
