@@ -19,3 +19,21 @@ TestFixture::check_internet()
   REQUIRE(resp.error.code == cpr::ErrorCode::OK);
   REQUIRE(resp.status_code == 204);
 }
+
+void
+TestFixture::check_conversion_recalculation(const float first_conversion,
+                                            const float second_conversion)
+{
+  if (first_conversion == 1.0) {
+    CHECK(first_conversion == second_conversion);
+    return;
+  }
+  CHECK(first_conversion != second_conversion);
+}
+
+float
+TestFixture::get_current_conversion_result() const
+{
+  return calculator->calculator_frame.currencyConversionResult->text()
+    .toFloat();
+}

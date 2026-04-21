@@ -58,9 +58,7 @@ SCENARIO("The user can convert from one currency to another by swapping the "
       test_fixture.calculator->calculator_frame.fromCurrencySpinBox->setValue(
         1.0);
       const float initial_conversion =
-        test_fixture.calculator->calculator_frame.currencyConversionResult
-          ->text()
-          .toFloat();
+        test_fixture.get_current_conversion_result();
       test_fixture.calculator->calculator_frame.fromCurrencyComboBox
         ->setCurrentIndex(1);
 
@@ -68,18 +66,44 @@ SCENARIO("The user can convert from one currency to another by swapping the "
            "swapped")
       {
         const float final_conversion =
-          test_fixture.calculator->calculator_frame.currencyConversionResult
-            ->text()
-            .toFloat();
-        if (initial_conversion == 1.0) {
-          CHECK(initial_conversion == final_conversion);
-        } else {
-          CHECK(initial_conversion != final_conversion);
-        }
+          test_fixture.get_current_conversion_result();
+        TestFixture::check_conversion_recalculation(initial_conversion,
+                                                    final_conversion);
         CHECK(test_fixture.calculator->calculator_frame.fromCurrencyComboBox
                 ->currentIndex() == 1);
         CHECK(test_fixture.calculator->calculator_frame.toCurrencyComboBox
                 ->currentIndex() == 0);
+      }
+    }
+  }
+}
+
+SCENARIO("The conversion rate is updated whenever the base or target "
+         "currencies are changed")
+{
+  GIVEN("The calculator app is initialized and there is an active internet "
+        "connection")
+  {
+    const TestFixture test_fixture;
+    TestFixture::check_internet();
+
+    WHEN("The base currency is changed and then the target currency is changed")
+    {
+      test_fixture.calculator->calculator_frame.fromCurrencyComboBox
+        ->setCurrentIndex(3);
+      test_fixture.calculator->calculator_frame.fromCurrencySpinBox->setValue(
+        1.0);
+      const float first_conversion =
+        test_fixture.get_current_conversion_result();
+      test_fixture.calculator->calculator_frame.toCurrencyComboBox
+        ->setCurrentIndex(2);
+      const float second_conversion =
+        test_fixture.get_current_conversion_result();
+
+      THEN("The conversion rate is recalculated")
+      {
+        TestFixture::check_conversion_recalculation(first_conversion,
+                                                    second_conversion);
       }
     }
   }

@@ -8,6 +8,9 @@ class TestFixture
 public:
   TestFixture();
   static void check_internet();
+  static void check_conversion_recalculation(float first_conversion,
+                                             float second_conversion);
+  [[nodiscard]] float get_current_conversion_result() const;
   Calculator* calculator{ nullptr };
 
 private:
