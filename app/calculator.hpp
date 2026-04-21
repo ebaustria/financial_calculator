@@ -16,6 +16,8 @@ public:
                       Qt::WindowFlags flags = Qt::WindowFlags());
   ~Calculator() override;
 
+  Ui::CalculatorFrame calculator_frame;
+
 private slots:
   void calculate_result() const;
   void update_equation(const QString& str) const;
@@ -27,8 +29,6 @@ private slots:
   void currency_amount_changed(double new_amount);
 
 private:
-  Ui::CalculatorFrame calculator_frame;
-
   void connect_button(const QPushButton* button, char ch);
   static void update_axis_text(QAbstractAxis* axis, const QString& label);
   static void set_validators_for_numeric_form(const QWidget* form);
