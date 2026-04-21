@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 4.0)
 project(test)
 
 add_executable(tests
+        test_fixture.hpp
+        test_fixture.cpp
         calculator_test.cpp
         token_test.cpp
         shunting_yard_test.cpp
