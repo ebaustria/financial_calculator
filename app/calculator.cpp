@@ -163,20 +163,14 @@ Calculator::set_up_chart() const
   calculator_frame.lineChart->setChart(chart);
 }
 
-// TODO Move error handling to plot_conversion_rates() and actually handle
-// errors
 void
 Calculator::one_month_radio_toggled(const bool checked)
 {
   if (checked) {
-    try {
-      const QDateTime now = QDateTime::currentDateTime();
-      from = now.addMonths(-1);
-      group = "week";
-      plot_conversion_rates();
-    } catch (std::exception& e) {
-      std::cerr << e.what() << std::endl;
-    }
+    const QDateTime now = QDateTime::currentDateTime();
+    from = now.addMonths(-1);
+    group = "week";
+    plot_conversion_rates();
   }
 }
 
@@ -184,14 +178,10 @@ void
 Calculator::six_month_radio_toggled(const bool checked)
 {
   if (checked) {
-    try {
-      const QDateTime now = QDateTime::currentDateTime();
-      from = now.addMonths(-6);
-      group = "week";
-      plot_conversion_rates();
-    } catch (std::exception& e) {
-      std::cerr << e.what() << std::endl;
-    }
+    const QDateTime now = QDateTime::currentDateTime();
+    from = now.addMonths(-6);
+    group = "week";
+    plot_conversion_rates();
   }
 }
 
@@ -199,14 +189,10 @@ void
 Calculator::one_year_radio_toggled(const bool checked)
 {
   if (checked) {
-    try {
-      const QDateTime now = QDateTime::currentDateTime();
-      from = now.addYears(-1);
-      group = "week";
-      plot_conversion_rates();
-    } catch (std::exception& e) {
-      std::cerr << e.what() << std::endl;
-    }
+    const QDateTime now = QDateTime::currentDateTime();
+    from = now.addYears(-1);
+    group = "week";
+    plot_conversion_rates();
   }
 }
 
@@ -214,30 +200,30 @@ void
 Calculator::five_year_radio_toggled(const bool checked)
 {
   if (checked) {
-    try {
-      const QDateTime now = QDateTime::currentDateTime();
-      from = now.addYears(-5);
-      group = "month";
-      plot_conversion_rates();
-    } catch (std::exception& e) {
-      std::cerr << e.what() << std::endl;
-    }
+    const QDateTime now = QDateTime::currentDateTime();
+    from = now.addYears(-5);
+    group = "month";
+    plot_conversion_rates();
   }
 }
 
 void
 Calculator::plot_conversion_rates()
 {
-  ConversionStrategy currency_conversion_strat{
-    calculator_frame.fromCurrencyComboBox->currentText(),
-    calculator_frame.toCurrencyComboBox->currentText(),
-    from,
-    group
-  };
-  chart_context.set_strategy(&currency_conversion_strat);
-  chart_context.replace_series();
-  // TODO Handle title, axis labels here
-  update_chart("Conversion Rate", "Something");
+  try {
+    ConversionStrategy currency_conversion_strat{
+      calculator_frame.fromCurrencyComboBox->currentText(),
+      calculator_frame.toCurrencyComboBox->currentText(),
+      from,
+      group
+    };
+    chart_context.set_strategy(&currency_conversion_strat);
+    chart_context.replace_series();
+    // TODO Handle title, axis labels here
+    update_chart("Conversion Rate", "Something");
+  } catch (std::exception& e) {
+    std::cerr << e.what() << std::endl;
+  }
 }
 
 void
