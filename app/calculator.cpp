@@ -25,6 +25,13 @@ Calculator::Calculator(QWidget* parent, const Qt::WindowFlags flags)
   group = "week";
   calculator_frame.oneMonthRadioButton->toggle();
 
+  const QStringList available_currencies{ "USD", "EUR", "GBP", "CHF", "AUD",
+                                          "CAD", "INR", "JPY", "CNY" };
+  calculator_frame.fromCurrencyComboBox->insertItems(0, available_currencies);
+  calculator_frame.toCurrencyComboBox->insertItems(0, available_currencies);
+  calculator_frame.fromCurrencyComboBox->setCurrentIndex(0);
+  calculator_frame.toCurrencyComboBox->setCurrentIndex(1);
+
   connect_button(calculator_frame.pushButton_0, '0');
   connect_button(calculator_frame.pushButton_1, '1');
   connect_button(calculator_frame.pushButton_2, '2');
@@ -96,12 +103,6 @@ Calculator::Calculator(QWidget* parent, const Qt::WindowFlags flags)
           this,
           &Calculator::five_year_radio_toggled);
 
-  const QStringList available_currencies{ "USD", "EUR", "GBP", "CHF", "AUD",
-                                          "CAD", "INR", "JPY", "CNY" };
-  calculator_frame.fromCurrencyComboBox->insertItems(0, available_currencies);
-  calculator_frame.toCurrencyComboBox->insertItems(0, available_currencies);
-  calculator_frame.fromCurrencyComboBox->setCurrentIndex(0);
-  calculator_frame.toCurrencyComboBox->setCurrentIndex(1);
   from_currency_index = calculator_frame.fromCurrencyComboBox->currentIndex();
   to_currency_index = calculator_frame.toCurrencyComboBox->currentIndex();
   calculator_frame.currencyConversionResult->setText(
@@ -113,6 +114,7 @@ Calculator::Calculator(QWidget* parent, const Qt::WindowFlags flags)
   calculator_frame.loanRepaymentErrorLabel->setStyleSheet("color: red;");
 
   set_up_chart();
+  plot_conversion_rates();
 }
 
 Calculator::~Calculator()
@@ -144,7 +146,6 @@ Calculator::set_up_chart() const
   QSizePolicy sp_retain = calculator_frame.conversionRateTimespan->sizePolicy();
   sp_retain.setRetainSizeWhenHidden(true);
   calculator_frame.conversionRateTimespan->setSizePolicy(sp_retain);
-  calculator_frame.conversionRateTimespan->setVisible(false);
   chart->legend()->hide();
   chart->addSeries(chart_context.line_series);
   chart->setAnimationOptions(QChart::SeriesAnimations);
@@ -162,6 +163,8 @@ Calculator::set_up_chart() const
   calculator_frame.lineChart->setChart(chart);
 }
 
+// TODO Move error handling to plot_conversion_rates() and actually handle
+// errors
 void
 Calculator::one_month_radio_toggled(const bool checked)
 {
@@ -242,9 +245,6 @@ Calculator::currency_amount_changed(const double new_amount)
 {
   if (from_currency_index != INVALID_CURRENCY_INDEX &&
       to_currency_index != INVALID_CURRENCY_INDEX) {
-    if (currency_amount == 0.0 && new_amount > currency_amount) {
-      plot_conversion_rates();
-    }
     update_conversion_result();
   }
   currency_amount = new_amount;
@@ -263,9 +263,7 @@ Calculator::from_currency_changed(const int new_from_index)
 
   if (!swapped && from_currency_index != INVALID_CURRENCY_INDEX &&
       to_currency_index != INVALID_CURRENCY_INDEX) {
-    if (currency_amount != 0.0) {
-      plot_conversion_rates();
-    }
+    plot_conversion_rates();
     update_conversion_result();
   }
 }
@@ -283,9 +281,7 @@ Calculator::to_currency_changed(const int new_to_index)
 
   if (!swapped && from_currency_index != INVALID_CURRENCY_INDEX &&
       to_currency_index != INVALID_CURRENCY_INDEX) {
-    if (currency_amount != 0.0) {
-      plot_conversion_rates();
-    }
+    plot_conversion_rates();
     update_conversion_result();
   }
 }
