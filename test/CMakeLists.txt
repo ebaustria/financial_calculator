@@ -7,7 +7,7 @@ add_executable(tests
         calculator_test.cpp
         token_test.cpp
         shunting_yard_test.cpp
-        chart_series_test.cpp
+        strategy_test.cpp
 )
 
 include_directories(

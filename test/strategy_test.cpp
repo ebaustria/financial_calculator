@@ -5,7 +5,7 @@
 #include "test_helpers.hpp"
 
 void
-check_final_strat_principal(Strategy* strategy, const uint32_t total_years)
+check_final_strat_principal(FinancialInstrumentStrat* strategy, const uint32_t total_years)
 {
   const QList<QPointF> future_values = strategy->calculate_all();
   REQUIRE(future_values.size() == total_years + 1);
