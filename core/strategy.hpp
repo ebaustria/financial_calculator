@@ -1,5 +1,6 @@
-#ifndef FINANCIAL_CALCULATOR_CHART_SERIES_HPP
-#define FINANCIAL_CALCULATOR_CHART_SERIES_HPP
+#ifndef FINANCIAL_CALCULATOR_STRATEGY_HPP
+#define FINANCIAL_CALCULATOR_STRATEGY_HPP
+#include <QDateTime>
 #include <QtCharts/QLineSeries>
 
 class InputChecker
@@ -24,25 +25,55 @@ private:
 class Strategy
 {
 public:
-  explicit Strategy(const QString& prin,
-                    const QString& int_rate,
-                    const QString& m_periods);
+  Strategy() = default;
   virtual ~Strategy() = default;
-  virtual double calculate(uint32_t period) = 0;
-  virtual QList<QPointF> calculate_all();
-  uint32_t max_periods;
-  float principal;
-  float interest_rate;
+  virtual QList<QPointF> calculate_all() = 0;
+
   uint8_t min_x{ 0 };
   uint32_t max_x{ 0 };
   double min_y{ 0 };
   double max_y{ 0 };
+};
+
+class ConversionStrategy : public Strategy
+{
+public:
+  explicit ConversionStrategy(QString base,
+                              QString target,
+                              const QDateTime& from,
+                              std::string grouping);
+
+  static double convert_currency(const QString& base,
+                                 const QString& target,
+                                 double amount);
+
+  QList<QPointF> calculate_all() override;
+
+private:
+  QString base_currency;
+  QString target_currency;
+  QString from_date;
+  std::string group;
+};
+
+class FinancialInstrumentStrat : public Strategy
+{
+public:
+  explicit FinancialInstrumentStrat(const QString& prin,
+                                    const QString& int_rate,
+                                    const QString& m_periods);
+  ~FinancialInstrumentStrat() override = default;
+  virtual double calculate(uint32_t period) = 0;
+  QList<QPointF> calculate_all() override;
+  uint32_t max_periods;
+  float principal;
+  float interest_rate;
 
 protected:
   InputChecker input_checker;
 };
 
-class CompoundingInterestStrategy : public Strategy
+class CompoundingInterestStrategy : public FinancialInstrumentStrat
 {
 public:
   CompoundingInterestStrategy(const QString& prin,
@@ -56,27 +87,27 @@ private:
   double compound_rate;
 };
 
-class SimpleInterestStrategy : public Strategy
+class SimpleInterestStrategy : public FinancialInstrumentStrat
 {
 public:
   SimpleInterestStrategy(const QString& prin,
                          const QString& int_rate,
                          const QString& m_periods)
-    : Strategy{ prin, int_rate, m_periods }
+    : FinancialInstrumentStrat{ prin, int_rate, m_periods }
   {
   }
 
   double calculate(uint32_t period) override;
 };
 
-class LoanRepaymentStrategy : public Strategy
+class LoanRepaymentStrategy : public FinancialInstrumentStrat
 {
 public:
   LoanRepaymentStrategy(const QString& prin,
                         const QString& int_rate,
                         const QString& payment);
 
-  QList<QPointF> calculate_all() override;
+  QList<QPointF> calculate_all() final;
   double calculate(uint32_t period) override;
   [[nodiscard]] bool is_amortizing() const;
 
@@ -85,15 +116,4 @@ private:
   double monthly_interest;
 };
 
-class ChartSeries
-{
-public:
-  ChartSeries();
-  void set_strategy(Strategy* strat);
-  void replace_series() const;
-
-  QLineSeries* line_series{ nullptr };
-  Strategy* strategy{ nullptr };
-};
-
-#endif // FINANCIAL_CALCULATOR_CHART_SERIES_HPP
+#endif // FINANCIAL_CALCULATOR_STRATEGY_HPP

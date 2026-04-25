@@ -3,12 +3,12 @@ project(core)
 
 qt_add_library(core
         shunting_yard.hpp
-        chart_series.hpp
-        chart_series.cpp
+        chart_context.hpp
+        chart_context.cpp
+        strategy.hpp
+        strategy.cpp
         token.hpp
         token.cpp
-        currency_conversion.hpp
-        currency_conversion.cpp
 )
 
 target_link_libraries(core PUBLIC Qt6::Widgets Qt6::Charts Qt6::Core cpr)

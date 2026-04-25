@@ -1,4 +1,4 @@
-#include "core/chart_series.hpp"
+#include "core/strategy.hpp"
 
 #include <catch2/catch_test_macros.hpp>
 

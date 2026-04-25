@@ -3,7 +3,7 @@
 
 #include <ui_calculator.h>
 
-#include "core/chart_series.hpp"
+#include "core/chart_context.hpp"
 
 constexpr int INVALID_CURRENCY_INDEX{ -1 };
 
@@ -27,6 +27,10 @@ private slots:
   void from_currency_changed(int new_from_index);
   void to_currency_changed(int new_to_index);
   void currency_amount_changed(double new_amount);
+  void one_month_radio_toggled(bool checked);
+  void six_month_radio_toggled(bool checked);
+  void one_year_radio_toggled(bool checked);
+  void five_year_radio_toggled(bool checked);
 
 private:
   void connect_button(const QPushButton* button, char ch);
@@ -36,10 +40,14 @@ private:
   void update_chart(const QString& title, const QString& x_label) const;
   void update_conversion_result();
   void set_up_chart() const;
+  void plot_conversion_rates();
   double conversion_result{ 0.0 };
+  double currency_amount{ 0.0 };
+  QDateTime from;
+  std::string group;
   int from_currency_index{ INVALID_CURRENCY_INDEX };
   int to_currency_index{ INVALID_CURRENCY_INDEX };
-  ChartSeries chart_series;
+  ChartContext chart_context;
   QChart* chart{ nullptr };
 };
 

@@ -1,11 +1,12 @@
 #include "calculator.hpp"
 
 #include <QRegularExpressionValidator>
+#include <iostream>
 #include <queue>
 #include <regex>
 
-#include "core/currency_conversion.hpp"
 #include "core/shunting_yard.hpp"
+#include "core/strategy.hpp"
 
 // QRegularExpression Calculator::exp{ R"(^\D*\.\d*$)" };
 
@@ -18,6 +19,11 @@ Calculator::Calculator(QWidget* parent, const Qt::WindowFlags flags)
   set_validators_for_numeric_form(calculator_frame.compoundForm);
   set_validators_for_numeric_form(calculator_frame.simpleInterestForm);
   set_validators_for_numeric_form(calculator_frame.loanRepaymentForm);
+
+  const QDateTime now = QDateTime::currentDateTime();
+  from = now.addMonths(-1);
+  group = "week";
+  calculator_frame.oneMonthRadioButton->toggle();
 
   connect_button(calculator_frame.pushButton_0, '0');
   connect_button(calculator_frame.pushButton_1, '1');
@@ -73,6 +79,22 @@ Calculator::Calculator(QWidget* parent, const Qt::WindowFlags flags)
           &QDoubleSpinBox::valueChanged,
           this,
           &Calculator::currency_amount_changed);
+  connect(calculator_frame.oneMonthRadioButton,
+          &QAbstractButton::toggled,
+          this,
+          &Calculator::one_month_radio_toggled);
+  connect(calculator_frame.sixMonthsRadioButton,
+          &QAbstractButton::toggled,
+          this,
+          &Calculator::six_month_radio_toggled);
+  connect(calculator_frame.oneYearRadioButton,
+          &QAbstractButton::toggled,
+          this,
+          &Calculator::one_year_radio_toggled);
+  connect(calculator_frame.fiveYearsRadioButton,
+          &QAbstractButton::toggled,
+          this,
+          &Calculator::five_year_radio_toggled);
 
   const QStringList available_currencies{ "USD", "EUR", "GBP", "CHF", "AUD",
                                           "CAD", "INR", "JPY", "CNY" };
@@ -119,8 +141,12 @@ Calculator::set_numeric_validator(QLineEdit* line_edit)
 void
 Calculator::set_up_chart() const
 {
+  QSizePolicy sp_retain = calculator_frame.conversionRateTimespan->sizePolicy();
+  sp_retain.setRetainSizeWhenHidden(true);
+  calculator_frame.conversionRateTimespan->setSizePolicy(sp_retain);
+  calculator_frame.conversionRateTimespan->setVisible(false);
   chart->legend()->hide();
-  chart->addSeries(chart_series.line_series);
+  chart->addSeries(chart_context.line_series);
   chart->setAnimationOptions(QChart::SeriesAnimations);
   chart->createDefaultAxes();
   chart->axes().at(0)->setLabelsBrush(QBrush(Qt::white));
@@ -137,12 +163,91 @@ Calculator::set_up_chart() const
 }
 
 void
-Calculator::currency_amount_changed(double new_amount)
+Calculator::one_month_radio_toggled(const bool checked)
+{
+  if (checked) {
+    try {
+      const QDateTime now = QDateTime::currentDateTime();
+      from = now.addMonths(-1);
+      group = "week";
+      plot_conversion_rates();
+    } catch (std::exception& e) {
+      std::cerr << e.what() << std::endl;
+    }
+  }
+}
+
+void
+Calculator::six_month_radio_toggled(const bool checked)
+{
+  if (checked) {
+    try {
+      const QDateTime now = QDateTime::currentDateTime();
+      from = now.addMonths(-6);
+      group = "week";
+      plot_conversion_rates();
+    } catch (std::exception& e) {
+      std::cerr << e.what() << std::endl;
+    }
+  }
+}
+
+void
+Calculator::one_year_radio_toggled(const bool checked)
+{
+  if (checked) {
+    try {
+      const QDateTime now = QDateTime::currentDateTime();
+      from = now.addYears(-1);
+      group = "week";
+      plot_conversion_rates();
+    } catch (std::exception& e) {
+      std::cerr << e.what() << std::endl;
+    }
+  }
+}
+
+void
+Calculator::five_year_radio_toggled(const bool checked)
+{
+  if (checked) {
+    try {
+      const QDateTime now = QDateTime::currentDateTime();
+      from = now.addYears(-5);
+      group = "month";
+      plot_conversion_rates();
+    } catch (std::exception& e) {
+      std::cerr << e.what() << std::endl;
+    }
+  }
+}
+
+void
+Calculator::plot_conversion_rates()
+{
+  ConversionStrategy currency_conversion_strat{
+    calculator_frame.fromCurrencyComboBox->currentText(),
+    calculator_frame.toCurrencyComboBox->currentText(),
+    from,
+    group
+  };
+  chart_context.set_strategy(&currency_conversion_strat);
+  chart_context.replace_series();
+  // TODO Handle title, axis labels here
+  update_chart("Conversion Rate", "Something");
+}
+
+void
+Calculator::currency_amount_changed(const double new_amount)
 {
   if (from_currency_index != INVALID_CURRENCY_INDEX &&
       to_currency_index != INVALID_CURRENCY_INDEX) {
+    if (currency_amount == 0.0 && new_amount > currency_amount) {
+      plot_conversion_rates();
+    }
     update_conversion_result();
   }
+  currency_amount = new_amount;
 }
 
 void
@@ -158,6 +263,9 @@ Calculator::from_currency_changed(const int new_from_index)
 
   if (!swapped && from_currency_index != INVALID_CURRENCY_INDEX &&
       to_currency_index != INVALID_CURRENCY_INDEX) {
+    if (currency_amount != 0.0) {
+      plot_conversion_rates();
+    }
     update_conversion_result();
   }
 }
@@ -175,6 +283,9 @@ Calculator::to_currency_changed(const int new_to_index)
 
   if (!swapped && from_currency_index != INVALID_CURRENCY_INDEX &&
       to_currency_index != INVALID_CURRENCY_INDEX) {
+    if (currency_amount != 0.0) {
+      plot_conversion_rates();
+    }
     update_conversion_result();
   }
 }
@@ -183,10 +294,11 @@ void
 Calculator::update_conversion_result()
 {
   try {
-    conversion_result =
-      convert_currency(calculator_frame.fromCurrencyComboBox->currentText(),
-                       calculator_frame.toCurrencyComboBox->currentText(),
-                       calculator_frame.fromCurrencySpinBox->value());
+    calculator_frame.conversionRateTimespan->setVisible(true);
+    conversion_result = ConversionStrategy::convert_currency(
+      calculator_frame.fromCurrencyComboBox->currentText(),
+      calculator_frame.toCurrencyComboBox->currentText(),
+      calculator_frame.fromCurrencySpinBox->value());
     calculator_frame.currencyConversionResult->setText(
       QString::number(conversion_result));
     calculator_frame.currencyConversionErrorLabel->clear();
@@ -220,10 +332,11 @@ Calculator::plot_compounding_interest()
       calculator_frame.compoundRateLineEdit->text(),
       calculator_frame.compoundYearsLineEdit->text()
     };
-    chart_series.set_strategy(&comp_int_strat);
-    chart_series.replace_series();
+    chart_context.set_strategy(&comp_int_strat);
+    chart_context.replace_series();
     update_chart("Compounding Interest", "Years");
     calculator_frame.compoundInterestErrorLabel->clear();
+    calculator_frame.conversionRateTimespan->setVisible(false);
   } catch (std::exception& e) {
     calculator_frame.compoundInterestErrorLabel->setText(e.what());
   }
@@ -237,10 +350,11 @@ Calculator::plot_simple_interest()
       SimpleInterestStrategy{ calculator_frame.simplePrincipalLineEdit->text(),
                               calculator_frame.simpleLineEdit->text(),
                               calculator_frame.simpleYearsLineEdit->text() };
-    chart_series.set_strategy(&simple_int_strat);
-    chart_series.replace_series();
+    chart_context.set_strategy(&simple_int_strat);
+    chart_context.replace_series();
     update_chart("Simple Interest", "Years");
     calculator_frame.simpleInterestErrorLabel->clear();
+    calculator_frame.conversionRateTimespan->setVisible(false);
   } catch (std::exception& e) {
     calculator_frame.simpleInterestErrorLabel->setText(e.what());
   }
@@ -254,10 +368,11 @@ Calculator::plot_loan_repayment()
       LoanRepaymentStrategy{ calculator_frame.loanPrincipalEdit->text(),
                              calculator_frame.loanInterestEdit->text(),
                              calculator_frame.loanPaymentEdit->text() };
-    chart_series.set_strategy(&repayment_strat);
-    chart_series.replace_series();
+    chart_context.set_strategy(&repayment_strat);
+    chart_context.replace_series();
     update_chart("Loan Repayment", "Months");
     calculator_frame.loanRepaymentErrorLabel->clear();
+    calculator_frame.conversionRateTimespan->setVisible(false);
   } catch (std::exception& e) {
     calculator_frame.loanRepaymentErrorLabel->setText(e.what());
   }
@@ -280,10 +395,12 @@ Calculator::update_chart(const QString& title, const QString& x_label) const
   const auto x_axis = chart->axes(Qt::Horizontal).first();
   const auto y_axis = chart->axes(Qt::Vertical).first();
 
-  x_axis->setRange(chart_series.strategy->min_x, chart_series.strategy->max_x);
+  x_axis->setRange(chart_context.strategy->min_x,
+                   chart_context.strategy->max_x);
   update_axis_text(x_axis, x_label);
 
-  y_axis->setRange(chart_series.strategy->min_y, chart_series.strategy->max_y);
+  y_axis->setRange(chart_context.strategy->min_y,
+                   chart_context.strategy->max_y);
   update_axis_text(y_axis, "Currency");
 
   chart->setTitle(title);

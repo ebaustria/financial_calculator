@@ -1,6 +1,10 @@
-#include "chart_series.hpp"
+#include "strategy.hpp"
 #include "token.hpp"
 #include <cmath>
+#include <cpr/cpr.h>
+#include <iostream>
+#include <nlohmann/json.hpp>
+#include <utility>
 
 bool
 InputCheckerDecorator::is_integer(const QString& str)
@@ -37,9 +41,91 @@ InputChecker::check_input(const QString& input, const std::string& arg_name)
   }
 }
 
-Strategy::Strategy(const QString& prin,
-                   const QString& int_rate,
-                   const QString& m_periods)
+ConversionStrategy::ConversionStrategy(QString base,
+                                       QString target,
+                                       const QDateTime& from,
+                                       std::string grouping)
+  : base_currency{ std::move(base) }
+  , target_currency{ std::move(target) }
+  , group{ std::move(grouping) }
+{
+  from_date = from.toString(Qt::ISODate).mid(0, 10);
+}
+
+QList<QPointF>
+ConversionStrategy::calculate_all()
+{
+  QList<QPointF> new_points;
+  std::stringstream url_sstream;
+
+  url_sstream << "https://api.frankfurter.dev/v2/rates?from="
+              << from_date.toStdString()
+              << "&base=" << base_currency.toStdString()
+              << "&quotes=" << target_currency.toStdString()
+              << "&group=" << group;
+
+  const cpr::Response r = cpr::Get(cpr::Url{ url_sstream.str() });
+
+  if (r.error.code != cpr::ErrorCode::OK) {
+    throw std::runtime_error(r.error.message);
+  }
+
+  auto json_response = nlohmann::json::parse(r.text);
+  const uint32_t total_rates = json_response.size();
+  max_x = total_rates - 1;
+  min_y = std::numeric_limits<float>::max();
+  max_y = std::numeric_limits<float>::min();
+
+  for (size_t i = 0; i < total_rates; ++i) {
+    auto obj = json_response[i];
+    const double rate = json_response[i]["rate"];
+    min_y = qMin(min_y, rate);
+    max_y = qMax(max_y, rate);
+    new_points.append(QPointF{ static_cast<double>(i), rate });
+  }
+
+  // TODO Move min and max handling to calculator class
+  const double diff = max_y - min_y;
+  const double buffer = diff * 0.1;
+  max_y += buffer;
+  min_y -= buffer;
+
+  return new_points;
+}
+
+double
+ConversionStrategy::convert_currency(const QString& base,
+                                     const QString& target,
+                                     const double amount)
+{
+  // const QDateTime now = QDateTime::currentDateTime();
+  // const QDateTime yesterday = now.addDays(-1);
+  // const QString now_str = now.toString(Qt::ISODate).mid(0, 10);
+  // const QString yesterday_str = yesterday.toString(Qt::ISODate).mid(0, 10);
+  std::stringstream url_sstream;
+
+  if (amount == 0.0) {
+    return amount;
+  }
+
+  url_sstream << "https://api.frankfurter.app/latest?amount="
+              << std::to_string(amount) << "&from=" << base.toStdString()
+              << "&to=" << target.toStdString();
+
+  const cpr::Response r = cpr::Get(cpr::Url{ url_sstream.str() });
+
+  if (r.error.code != cpr::ErrorCode::OK) {
+    throw std::runtime_error(r.error.message);
+  }
+
+  auto json_response = nlohmann::json::parse(r.text);
+  const double result = json_response["rates"][target.toStdString()];
+  return result;
+}
+
+FinancialInstrumentStrat::FinancialInstrumentStrat(const QString& prin,
+                                                   const QString& int_rate,
+                                                   const QString& m_periods)
 {
   input_checker.check_input(prin, "Principal");
   input_checker.check_input(int_rate, "Interest rate");
@@ -58,7 +144,7 @@ CompoundingInterestStrategy::CompoundingInterestStrategy(
   const QString& int_rate,
   const QString& comp_rate,
   const QString& m_periods)
-  : Strategy{ prin, int_rate, m_periods }
+  : FinancialInstrumentStrat{ prin, int_rate, m_periods }
 {
   InputCheckerDecorator input_checker_decorator{ &input_checker };
   input_checker_decorator.check_input(comp_rate, "Annual compound rate");
@@ -69,7 +155,7 @@ CompoundingInterestStrategy::CompoundingInterestStrategy(
 LoanRepaymentStrategy::LoanRepaymentStrategy(const QString& prin,
                                              const QString& int_rate,
                                              const QString& payment)
-  : Strategy{ prin, int_rate, QString{ "120" } }
+  : FinancialInstrumentStrat{ prin, int_rate, QString{ "120" } }
 {
   input_checker.check_input(payment, "Monthly payment");
 
@@ -79,7 +165,7 @@ LoanRepaymentStrategy::LoanRepaymentStrategy(const QString& prin,
 }
 
 QList<QPointF>
-Strategy::calculate_all()
+FinancialInstrumentStrat::calculate_all()
 {
   QList<QPointF> new_points;
   max_x = max_periods;
@@ -130,7 +216,7 @@ LoanRepaymentStrategy::calculate_all()
     max_x = period;
     min_y = remaining_balance;
   } else {
-    new_points = Strategy::calculate_all();
+    new_points = FinancialInstrumentStrat::calculate_all();
   }
   return new_points;
 }
@@ -149,22 +235,4 @@ bool
 LoanRepaymentStrategy::is_amortizing() const
 {
   return monthly_payment > principal * monthly_interest;
-}
-
-ChartSeries::ChartSeries()
-{
-  line_series = new QLineSeries{};
-}
-
-void
-ChartSeries::set_strategy(Strategy* strat)
-{
-  strategy = strat;
-}
-
-void
-ChartSeries::replace_series() const
-{
-  const QList<QPointF> new_points = strategy->calculate_all();
-  line_series->replace(new_points);
 }
